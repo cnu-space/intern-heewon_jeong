@@ -1,0 +1,539 @@
+\vspace{-1cm}
+\section{Fancier Output Formatting}
+
+지금까지 사용했던 표현식을 포함하는 문장(expression statements)과 print()함수 \\이외에도 출력값 포맷팅을 위해 파이썬에서 제공하는 더 다양한 방법들이 있다 :\\
+- formatted string literals\\
+- 문자열의 str .format() 메소드\\
+- 문자열 슬라이싱과 연결 연산을 사용하는 수동 포맷팅\\
+- 주어진 너비에 문자열을 채우기 위한 메소드 (문자열 보간)\\
+
+보기 좋게 정렬하는 것보다, 디버깅 과정을 위해 변수들을 빠르게 출력해야 한다면 repr() 또는 str() 함수를 사용할 수 있다.
+str() 함수는 객체를 쉽게 읽고 이해할 수 있도록 사용자를 위한 형태의 값을 반환해준다.
+반면 repr()함수는 인터프리터가 이해할 수 있는 '공식적인' 형태의 표현으로 값을 만들어 돌려준다. 만약 적절한 문법이 없다면 SyntaxError를 발생시키도록 되어있다.
+
+사람이 사용하기 위한 특별한 표현이 따로 없는 객체들의 경우에는 str()도 repr()과 똑같은 값을 돌려준다. 숫자들 또는 리스트나 딕셔너리와 같은 구조들이 그 예시이다. 예외로 문자열은 두 함수에 의해 각각 다르게 표현된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+hello = 'hello, world\n'
+hello  # 'hello, world\n'
+str(hello)  # 'hello, world\n'
+repr(hello)  # "'hello, world\\n'"
+print(str(hello))
+print(repr(hello))
+# hello, world
+#                 ...(줄넘김 \n)
+# 'hello, world\n'
+## 문자열에서 repr()은 따옴표, 역슬래시를 추가함
+## str()과 repr()을 print하면 각자의 방식으로 객체를 나타낸 문자열 안의 정보를 출력함
+
+x = 10 * 3.25
+y = '200'
+r = 'x = ' + repr(x) + ', y = ' + repr(y)
+s = 'x = ' + str(x) + ', y = ' + str(y)
+print(r)  # x = 32.5, y = '200'
+print(s)  # x = 32.5, y = 200
+## 숫자 x는 repr(x)와 str(x) 값이 같고, 문자열인 y는 두 함수에서의 출력값이 다르다
+
+x='1'+1  # TypeError
+str('1')+repr(1)  # '11'
+repr('1')+str(1)  # "'1'1"
+## 두 함수는 모두 문자열을 돌려줌 (문자열 더하기 연산 가능)
+
+i = [1,2,'a','b']
+repr(i)  # "[1, '2', 3, 4, 5]"
+str(i)  # "[1, '2', 3, 4, 5]"
+## 리스트 객체는 두 함수에서 동일하게 표현됨
+\end{minted}
+\newpage
+repr()의 사용 목적은 '객체를 문자열로 다시 생성하는 것'이라고 할 수 있다. \\
+eval()함수와 함께 사용되는 예시를 보면 그 의미를 쉽게 이해할 수 있다. \\eval()은 repr()과는 반대로 문자열로 객체를 생성하는 함수이다. \\
+다음과 같이 datetime 객체를 repr()로 생성한 문자열에 다시 eval() 함수를 실행하면 처음의 datetime 객체가 만들어져야 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+import datetime
+today = datetime.date.today()
+
+str(today)  # '2025-07-08'
+repr(today)  # 'datetime.date(2025, 7, 8)'
+
+eval(repr(today))  # datetime.date(2025, 7, 8)
+eval(repr(today)) == today  # True
+print(eval(repr(today)))  # 2025-07-08
+# datetime.date(2025, 7, 8)이 의미하는 정보를 print하면 2025-07-08을 얻는다
+\end{minted}
+
+\subsection{Formatted String Literals}
+포맷 문자열 리터럴, 또는 f-string은 f'문자열 {변수} 문자열' 형태로 문자열을 포맷하는 방법이다.
+중괄호 사이에 변수 대신 여러 가지 표현식을 넣으면 훨씬 정교한 포맷팅이 가능하다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+s1 = 'left'
+s2 = 'mid'
+s3 = 'right'
+result1 = f'|{s1:<10}|'  # 왼쪽 정렬
+result2 = f'|{s2:^10}|'  # 가운데 정렬
+result3 = f'|{s3:>10}|'  # 오른쪽 정렬
+print(result1)
+print(result2)
+print(result3)
+
+# 중괄호 출력하기
+num = 1, 2, 3, 4, 5
+result = f'squared = {{i**2 for i in {num}}}'
+print(result)
+
+# f-string과 딕셔너리
+d = {'name': 'Bob bingi', 'gender': 'M', 'age': 5}
+k = [key for key in d.keys()]
+dog = f'{k[0]}: {d[k[0]]}\n{k[1]}: {d[k[1]]}\n{k[2]}: {d[k[2]]}'
+print(dog)
+
+# f-string과 리스트
+a = [4,2,3,3,2,5,1,5,3]
+print(f'<5 ~ {5 + len(a)}번 정답>')
+for num, ans in enumerate(a, start = 5):
+    print(f' 문제{num:>3d}: {ans}번')
+
+# 문자열 안에서 함수 호출하기
+a = complex(2, 3)
+b = a.conjugate()
+result = f'{a}의 크기\n= ({a}X{b})^(1/2)\n= {abs(a):.2f}'
+print(result)
+
+#시퀀스 슬라이싱하기
+word = 'Python'
+line1 = f'{word}의 첫 두 글자는 {word[:2]}입니다.'
+line2 = f'{word}를 거꾸로 하면 {word[::-1]}입니다'
+line3 = f'3회 반복: {','.join([word] * 3)}'
+
+# 객체 치환하기
+# f-string 안에서 객체를 사용하면 str(객체)의 결과가 자동으로 삽입된다.
+from datetime import date
+today = f"오늘은 {date.today()}입니다."
+# 다른 수정자를 사용하면 포맷되기 전에 값을 변환할 수 있음.
+#(!a'는 ascii(), '!s'는 str(), '!r'는 repr()를 적용한다)
+today_r = f"오늘은 {date.today()!r}입니다."
+print(today)
+print(today_r)
+
+# 디버깅
+letter = 'a'
+print(f'letter = {letter}')
+letter = 'a'
+print(f"{letter =}")
+letter = 'a'
+print(f"{letter = !s}")
+\end{minted}
+
+\subsection{The String format() Method}
+문자열의 str.format() 메서드는 기본적으로 '문자열 {포맷 필드}문자열'.format(변수) \\형태로 쓰이는 메소드이다.\\
+중괄호 안의 문자들(포맷 필드)은 .format()을 통해 전달된 객체들로 치환된다.\\
+먼저, 중괄호 안에 0, 1, 2, ... 등의 숫자를 넣으면, 그 숫자들은 전달된 객체들의 위치를 가리킨다. 문자열.format('a',1,'hello')에서 'a'를 가리키려면 중괄호 안에 0을, 'hello'를 가리키려면 2를 사용하는 식이다.\\
+만약 객체들이 키워드 인자 형태로 전달된다면 중괄호 안에 숫자 대신 인자의 이름을 넣는다. 한 줄의 문자열 안에서 위치와 키워드 인자들을 혼합해서 사용해도 된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+print('{0}는 {1}와 {2}를 좋아한다'.format('로라', '메밀국수', '임금님 놀이'))
+>>> 로라는 메밀국수와 임금님 놀이를 좋아한다
+
+print('This {food} is {adjective}'.format(food = 'pizza', adjective = 'salty'))
+>>> This pizza is salty
+
+print('{sub1}: {1}점 / {sub2}: {1}점 / {sub3}: {0}점'.format(
+      80, 90, sub1 = '국어', sub2 = '수학', sub3 = '영어'))
+>>> 국어: 90점 / 수학: 90점 / 영어: 80점
+\end{minted}
+많은 수의 변수들을 사용하는 포맷 문자열을 만들 때에는 변수들을 위치 대신에 이름으로 지정해주는 것이 좋은데, 간단하게 딕셔너리를 format()으로 전달해줄 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 대괄호 안에 키를 넣어 포맷할 값에 액세스할 수 있다
+midterm = {'Alice': 70, 'Bob': 80, 'James': 'absence'}
+print('Alice: {0[Alice]:d} | Bob: {0[Bob]:d} | James: {0[James]:s}'
+      .format(midterm))
+>>> Alice: 70 | Bob: 80 | James: absence
+
+# 또는 같은 딕셔너리를 **를 이용해 키워드 인자로 전달할 수도 있다
+print('Alice: {Alice:d} | Bob: {Bob:d} | James: {James:s}'.format(**midterm))
+>>> Alice: 70 | Bob: 80 | James: absence
+# **midterm 키워드 인자들은 {Alice}자리에 70, {Bob}자리에 80, ...
+# 으로 입력되어 포맷팅된다
+
+--------------------------
+# 모든 지역 변수들을 돌려주는 함수 vars()와 함께 사용하는 예시
+table = {k: str(v) for k, v in vars().items()}
+table
+>>> {'__name__': '__main__', '__builtin__': "<module 'builtins' (built-
+     in)>", '__builtins__': "<module 'builtins' (built-in)>", ...
+
+formattedkeys_list = [f'{k}: ' + '{' + k + '};' for k in table.keys()]
+# 중괄호로 둘러싸인 k를 만드는 이유:
+# **를 이용해 키워드 인자로 딕셔너리를 전달했을 때,
+# k(key이름)에 대응되는 값(value)들이 중괄호 안에 치환된다.
+formattedkeys_list
+>>> ['__name__: {__name__};', '__builtin__: {__builtin__};',
+     '__builtins__: {__builtins__};', '_ih: {_ih};', '_oh: {_oh};
+     ', ... , '__file__: {__file__};']
+
+message = " ".join(formattedkeys_list)
+message
+>>> '__name__: {__name__}; __builtin__: {__builtin__};
+     __builtins__: {__builtins__}; _ih: {_ih}; _oh: {_oh};
+     ...  __file__: {__file__};'
+
+# message에서 join메소드를 통해 리스트 요소들을 묶어 문자열로 만들어주지 않으면
+# .format(**table)은 사용할 수 없음
+print(message.format(**table))'
+>>> __name__: __main__;
+    __builtin__: <module 'builtins' (built-in)>;
+    __builtins__: <module 'builtins' (built-in)>;
+    _ih: ['', "runcell(0, 'C:/Users/user/Downloads/untitled29.py')",
+          ...
+--------------------------
+for x in range(1, 11):
+    print('{0:2d} {1:3d} {2:4d}'.format(x, x*x, x*x*x))
+>>>  1   1    1
+     2   4    8
+     ...
+     9  81  729
+    10 100 1000  # 2d, 3d, 4d: 숫자들이 각각 2,3,4자리를 차지하며 출력되도록
+\end{minted}
+\subsection{Manual String Formatting}
+몇 가지 새로운 메소드들을 이용해서 수동으로 문자열을 포매팅 할 수도 있다.\\방금 전과 똑같은 제곱수, 세제곱수 표를 다른 방법으로 다시 포맷팅하면:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+for x in range(1, 11):
+    print(repr(x).rjust(2), repr(x*x).rjust(3), repr(x*x*x).rjust(4))
+>>>  1   1    1
+     2   4    8
+     ...
+     9  81  729
+    10 100 1000
+
+# .rjust()메소드를 사용하기 위해서는 숫자 값을 문자열로 변환시켜야 함
+# 위 코드에서는 repr() 함수를 이용해서 변환함
+for x in range(1, 11):
+    print(x.rjust(2), (x*x).rjust(3),end=' ')
+    print((x*x*x).rjust(4))
+>>> AttributeError: 'int' object has no attribute 'rjust'
+\end{minted}
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{l|l}
+\hline
+\textbf{메소드}  & \textbf{연산}          \\
+\hline\hline
+str.rjust()      & 문자열을 오른쪽으로 줄맞춤(왼쪽을 공백으로 채워서)    \\
+\hline
+str.ljust()      & 문자열을 왼쪽으로 줄맞춤                            \\
+\hline
+str.center()     & 문자열을 가운데에 줄맞춤                            \\
+\hline
+str.zfill()      & 숫자 문자열의 왼쪽을 0으로 채움                      \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Old string formatting}
+\%\ 연산자를 포맷팅에 사용하면 주어진 열 너비에 문자열을 채우는, 즉 문자열 보간을 효율적으로 수행할 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 10칸의 문자열 공간에서 오른쪽 정렬
+print("^^^%10s@@@" % "hello!");
+>>> ^^^    hello!@@@ # ^^^과 @@@사이에 10칸의 공간이 있음
+
+# 10칸의 문자열 공간에서 왼쪽 정렬
+print("^^^%-10s@@@" % "hi!");
+>>> ^^^hello!    @@@
+
+# 오른쪽 정렬하고 빈 공간은 0으로 채우기
+print("^^^%010d@@@" % 12);
+>>> ^^^0000000012@@@
+
+# 소수점 아래 4자리까지 나타내고 왼쪽 정렬
+print("^^^%-10.4f@@@" % 12.1);
+>>> ^^^12.1000   @@@
+
+# 오른쪽 정렬 후 부호(+) 표기하고 남는 공간 0으로 채우기
+print("^^^%+010.4f@@@" % 12.1);
+>>> ^^^+0012.1234@@@
+\end{minted}
+\section{Reading and Writing Files}
+open()은 파일 객체를 돌려주는 함수이며 주로 \\
+open('파일명', '모드', encoding = 'utf-8')와 같은 방식으로 호출된다. \\
+첫 번째 인자에는 파일의 이름이 문자열로 담겨 있다. \\
+두 번째 인자인 모드로는 파일이 어떤 방식으로 사용될지 가리키는 문자열이 들어간다.:\\
+\(\rightarrow\) 'r': 읽기 전용 / 'a': 덧붙이기 / 'w': 쓰기 전용(같은 이름의 파일이 이미 존재한다면 이전에 있던 파일이 삭제됨) / '+r': 읽고 쓰기 . \\
+모드는 선택적인 항목으로, 생략할 경우 'r'모드로 간주된다.
+\begin{tcolorbox}[colback=white,colframe=black!40!white,title=참고: 파일 열기 모드]
+\textbf{r+, w+, a+}: 읽기모드+쓰기모드. w+와 a+의 차이는 w와 a의 차이와 동일하다. 단, w+에서는 파일이 존재하지 않으면 새로 생성하지만 r+에서는 오류가 발생한다.
+\textbf{rb, wb, ab, rb+, wb+, ab+}: Binary 포맷으로 읽거나 쓰도록 하는 모드이다. \\(포맷을 제외하면 위와 동일하다)
+\end{tcolorbox}
+
+
+with 키워드란?\\
+어떤 파일을 입력, 출력할 때 반드시 open과 close를 해줘야한다.\\
+이것을 하나의 with문으로 나타낼 수 있는데, 그렇게 되면 깜빡 잊고 파일을 close해주지 않는 실수를 방지할 수 있다. \\
+기본적인 사용법은 \uline{with expression as target:}이다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+file_data = open('file.txt', 'r', encoding="utf-8")
+print(file_data.readline(), end="")  # 실행할 함수 예시
+file_data.close()
+\end{minted}
+with 키워드를 반드시 사용해야 하는 것은 아니다. \\
+하지만 위의 코드에서 close()를 호출하지 않는다면, 프로그램이 성공적으로 종료되었다 하더라도 file\_data.write()의 인자가 디스크에 완전히 기록되지 않을 수 있다.\\
+따라서 파일을 이렇게 여는 대신, with키워드를 사용하면
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+with open('file.txt', 'r', encoding="utf-8") as file_data:
+    # 함수는 동일하게 with문 안에 사용하면 됨
+    print(file_data.readline(), end="")
+\end{minted}
+with문을 빠져나올 때 file\_data .close()를 자동으로 호출해준다.
+
+\subsection{Methods of File Objects}
+지금부터의 예제들은 f라는 파일 객체가 이미 만들어졌다고 가정한다.\\
+(코드에서 with open( example.txt ) as f: 생략)
+
+\paragraph{write, writelines}
+두 메소드 모두 자동으로 줄넘김 해주는 기능은 없기 때문에\\
+내용을 다음 줄에 적고 싶다면 개행문자를 직접 넣어주어야 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 1. write
+f.write('hello Python\n')
+f.write('googbye\n')
+
+# 2. writelines : 리스트 안의 요소들을 한꺼번에 작성해줌
+f.writelines(['word1', 'word2', 'line3\n', 'line4\n'])
+\end{minted}
++ 만약 write하려는 값이 다른 자료형이라면, 입력하기 전 먼저 문자열 또는 바이트 객체로 변환해야 한다:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+value = ('the answer', 42)
+s = str(value)  # 튜플 -> 스트링
+f.write(s)
+\end{minted}
+
+\paragraph{read}
+f.read(size) - 파일에서 size 바이트만큼의 데이터를 읽는다.\\
+size로 음수가 입력되거나 생략되면 파일의 \uline{텍스트 전체}를 읽어온다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+read_result = f.read()
+print(read_result)
+>>> hello Python
+    googbye
+    word1word2line3
+    line4
+# readline이나 readlines에서처럼 각각의 분리된 줄들을 출력하는 것 같이 보이지만
+print(repr(read_result))
+>>> 'hello Python\ngoogbye\nword1word2line3\nline4\n'
+# 텍스트 전체를 읽어왔다는 것을 알 수 있음
+\end{minted}
+
+\paragraph{readline}
+개행(줄넘김)문자인 '\textbackslash n' 을 기준으로 line을 구분해서 읽는다.\\
+한 줄씩 읽어오기 때문에 대부분 반복문과 함께 쓰인다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+while True:
+    line = f.readline()
+    if not line: # 파일 읽기가 종료된 경우
+        break
+    print(line.strip())
+>>> hello Python
+    googbye
+    word1word2line3
+    line4
+#(문장들 사이가 한 줄씩 띄워지는 것을 방지하기 위해
+# .strip()으로 각각의 line들 끝에 붙어있는 \n을 제거해줌)
+\end{minted}
+
+\paragraph{readlines}
+파일의 모든 줄을 읽어온다. 하지만 텍스트를 통째로 반환하는것이 아니라, 개행문자를 포함한 line들의 list 형태로 변환하여 돌려준다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+lines = f.readlines()
+print(lines)
+>>> ['hello Python\n', 'googbye\n', 'word1word2line3\n', 'line4\n']
+for line in lines:
+   print(line.split())
+>>> hello Python
+    googbye
+    word1word2line3
+    line4
+\end{minted}
+\paragraph{list(f)}
+읽어온 문자열들을 포함하는 새로운 객체를 만드는 대신에 파일 객체 자체를
+looping해서 line들을 읽는 것도 가능하다. 이렇게 하면 빠르고 간단하며 메모리 면에서도 효율적이다. \\
+한 줄씩 출력하지 않고 readlines의 리스트처럼 확인하고 싶다면 list(f)를 출력하면 된다.
+\vspace{-0.5cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+for line in f:
+        print(line, end='')
+>>> hello Python
+    googbye
+    word1word2line3
+    line4
+print(f)
+>>> <_io.TextIOWrapper name='example.txt' mode='r' encoding='utf-8'>
+print(list(f))
+>>> ['hello Python\n', 'googbye\n', 'word1word2line3\n', 'line4\n']
+\end{minted}
+
+\paragraph{tell, seek}
+tell 메소드는 현재 커서의 위치를 반환해준다.\\
+(바이너리 모드에서는 파일의 처음으로부터 계산한 바이트 수를 돌려주지만, 텍스트 모드에서는 숫자를 반환받아도 위치에 대한 정보를 바로 얻기는 어렵다.) \\
+seek는 입력한 숫자에 해당하는 위치로 커서를 이동시킨다.
+f.seek(offset, whence) \\형태로 사용하며, 위치는 기준점(whence)에 offset 을 더해서 계산한다.  \\
+whence 값이 0 : 파일의 처음부터 측정 / 1: 현재 파일 위치 / 2 : 파일의 끝을 기준점으로.  \\
+whence 은 생략 가능한데 그럴 경우 기본값인 0(파일의 처음)을 기준점으로 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+f = open('example.txt', 'rb+') # 모드: binary 포맷, 읽기+쓰기
+f.write(b'0123456789abcdef')
+>>> 16  # 출력된 문자의 개수 반환
+
+f.seek(5)  # 첫번째 바이트 + 5 = 6 --> 6번째 바이트로 이동
+>>> 5
+
+f.read(1) # 현재 위치를 기준으로 1바이트
+>>> b'5'
+
+f.seek(-3, 2)  # 끝(whence = 2)에서부터 3번째 바이트로 이동
+>>> 13
+
+f.read(1)
+>>> b'd'
+\end{minted}

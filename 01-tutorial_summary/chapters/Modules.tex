@@ -1,0 +1,497 @@
+\vspace{-1.3cm}
+프로그램을 작성한 후에 인터프리터를 종료하면 전부 삭제되기 때문에, 코드를 어딘가에 저장해야 한다. 이때 .py로 끝나는 텍스트파일로 저장하고 파일을 실행하면 코드를 다시 입력하지 않아도 결과값을 얻을 수 있다.  이런 파이썬 코드들을 \uline{스크립트} 라고 한다.\\
+\newline
+모듈이란 이 중에서 함수, 변수 또는 클래스 등이 정의되어있는 .py 파일을 말한다. \\모듈의 이름은 저장된 파일의 이름과 같다. \\
+파이썬에는 \_\_name\_\_ 이라는 전역변수가 있다. 모듈명은 이 전역변수로 제공되는데, 만약 그 파일 자체가 직접 실행되었다면 \_\_main\_\_ 이 출력되고, import된 파일이라면 파일의 이름이 출력된다.
+\vspace{-0.4cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# my_module 파일 실행
+print(__name__)  # __main__
+
+# 다른 모듈에 import 됐을 때
+import my_module
+print(my_module.__name__)  # my_module
+\end{minted}
+모듈 안의 함수들 중 자주 사용하고싶은 것이 있다면 로컬 이름에 대입할 수 있다.
+\vspace{-0.4cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+func1 = my_module.func1
+\end{minted}
+
+\section{More on Modules}
+모듈은 함수 뿐 아니라 실행 가능한 문장들도 포함할 수 있다. \\이 문장들은 모듈이 처음 import될 떄에 딱 한번만 실행되고, 함수들 또한 한 번 실행된 이후로는 더이상 실행되지 않고 정의 되기만 한다.\\
+\newline
+모듈 예시:
+\vspace{-0.5cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 피보나치 수열 모듈
+def fib(n):
+    """ n 이하의 피보나치 수 출력하기 """
+    a, b = 0, 1
+    while a < n:
+        print(a,end=' ')
+        a, b = b, a+b
+    print()
+
+def fib2(n):
+    """ n 이하의 피보나치 수열 반환하기 """
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)
+        a, b = b, a+b
+    return result
+\end{minted}
+\vspace{-1cm}
+
+각 모듈은 자신만의 네임스페이스를 가지고 있다. \\(네임스페이스: 이름\(\leftrightarrow\)객체를 저장하는 공간으로 딕셔너리와 비슷하게 생각할 수 있음). 모듈과 사용자의 전역 네임스페이스는 격리되어있기 때문에, 모듈 작성자는 사용자의 전역변수와 충돌할 위험에 대해 걱정하지 않아도 된다. \\
+그럼에도 사용자가 모듈 내부의 전역변수의 값을 읽거나 변경하고자 한다면 \\'모듈이름.변수명' 형태로 접근 가능하다.  모듈 작성자의 입장에서는 의도치 않은 변경을 막고 싶은 변수의
+변수명 앞에 \_ 를 붙여서 사용을 금지할 수 있다.\\
+
+\newline
+기본적으로는 모듈을 통째로 불러와서, 모듈명을 통해 내부 함수나 클래스에 접근한다. \\
+하지만 그 대신에 모듈 내부의 특정 이름 자체를 사용자의 네임스페이스 안으로 가져올 수도 있다. 이 경우에는 해당 이름들만이 정의되고 모듈명은 정의되지 않는다.
+\vspace{-0.4cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from fibo import fib, fib2
+\end{minted}
+모듈 안의 이름들 (언더바로 시작하는 이름 제외)을 모두 가져오는 import문도 있다.
+\vspace{-0.4cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from fibo import *
+\end{minted}
+일반적으로 *을 임포트하는 것은 좋지 않다. 불러오려는 모듈과 현재 작업공간의 전역변수들이 충돌할 가능성이 높아지고, 가독성도 떨어지기 때문이다. \\
+\newline
+import문에서 모듈 이름 다음에 as가 올 경우 모듈명 대신 as뒤에 이어지는 이름을 사용할 수 있다.
+\vspace{-0.4cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from fibo import fib as fibonacci
+\end{minted}
+\vspace{+0.4cm}
+\subsection{Executing modules as scripts}
+인터프리터에서 모듈을 바로 실행하면 다른 모듈에 import되었을 때와 똑같이 작동한다. 한 가지 다른 점은  \_\_name\_\_ 이 \_\_main\_\_ 으로 설정된다는 것이다. \\
+이 모듈의 코드 끝에 아래의 코드를 붙이면,
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+if __name__ == "__main__":
+    import sys
+    fib(int(sys.argv[1]))
+\end{minted}
+모듈이 메인 파일로 열렸을 경우에는 스크립트로도 실행될 수 있다. \\
+\newline
+인터프리터에서는 python fibo.py <arguments> 형식으로 실행하면 되는데, \\이때 arguments(인수)로 넣은 값은 위 코드의 sys.argv[1]자리에 들어간다. \\만약 인수 자리에 여러 개의 값을 넣으면 argv[2], argv[3] ...에 차례로 들어가게 된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# fibo.py
+def fib(n): ...
+def fib2(n): ...
+if __name__ == "__main__":
+    import sys
+    print(f'파일명: {sys.argv[0]}') # argv[0]: 파일 이름
+    fib(int(sys.argv[1]))
+    print(fib2(int(sys.argv[2])))
+
+$ python fibo.py 10 20
+>>> 파일명: fibo.py
+    0 1 1 2 3 5 8
+    [0, 1, 1, 2, 3, 5, 8, 13]
+\end{minted}
+
+\subsection{The Module Search Path}
+어떤 모듈이 import되면, 인터프리터는 그 이름을 가진 내장 모듈을 먼저 찾는다.
+만약 없다면 다음으로 sys.path라는 변수가 제공하는 디렉토리(목적지, 파일)들을 살펴본다.
+
+sys.path의 디렉토리 리스트에는 \\
+1. 현재 디렉터리(또는 입력 스크립트를 포함하는 디렉터리)
+\(\rightarrow\) 현재 실행 중인 스크립트의 폴더에서 가장 먼저 모듈을 찾아보기 때문에\\
+예를 들어, 만약 직접 만든 random.py라는 이름의 파일이 이 폴더 안에 있다면 진짜 random모듈 대신 내가 만든 엉뚱한 파일을 불러오게 된다.
+
+2. PYTHONPATH (사용자 지정 경로)
+
+3. 설치 의존적인 기본값
+\(\rightarrow\) 파이썬 배포 시 포함되는 공식 기본 모듈(random, pathlib, ...) 또는 pip로 설치되는 외부 모듈(numpy, pandas, ...)
+
+
+%모듈을 검색하는 경로에 직접 경로를 추가하려면 sys.path 리스트에 경로를 추가하면 됩니다. sys.path 리스트의 첫 번째 요소로 현재 디렉토리가 자동으로 포함되어 있습니다. 그 외에 추가로 경로를 추가해야 하는 경우에는 다음과 같이 수행할 수 있습니다:
+\subsection{“Compiled” Python files}
+컴파일이란?\\
+작성된 소스 코드는 .py 파일로 저장되지만, 파이썬 인터프리터는 파일을 실행하기 전에 먼저 파이썬 바이트코드라는 형식으로 변환하는데 이 과정을 컴파일이라고 부른다. \\
+\newline
+.py파일이 한 번 실행되거나 import될 때 파이썬은 파일을 바이트코드(.pyc)파일로 변환해서 저장한다. 이렇게 .pyc 파일을 만들면 다음에 .py파일을 다시 컴파일할 필요가 없어 속도가 향상되기 때문이다. \\
+.pyc 캐시파일들은 모두 \_\_pycache\_\_ 라는 폴더에 (모듈명).(버전).pyc 형태의 이름으로 저장된다. 예를 들어 파이썬 3.11에서 만들어진 spam.py라는 모듈이 있다면,  이 모듈의 캐시 파일 경로는 \_\_pycache\_\_/spam.cpython-311.pyc 가 된다.
+
+파이썬에서는 소스 코드의 수정 날짜와 컴파일된 버전을 비교해서 최신 버전인지 항상 확인한다. 자동으로 처리되는 과정이기 때문에 직접 조작해줄 필요는 없다.\\
+\newline
+만약 모듈이 import되지 않고 명령창에서 직접 실행되는 경우에는 캐시를 확인하지 않고 매번 다시 컴파일하며, 결과 또한 저장되지 않는다. \\소스 코드 없이 캐시 파일만 존재하는 경우에도 캐시는 확인하지 않는다.
+
+\section{Standard Modules}
+sys 모듈의 ps1 와 ps2는 기본, 보조 프롬프트로 쓰이는 문자열을 정의하는 변수이다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+>>> import sys
+>>> sys.ps1  # 현재 기본 프롬프트
+'>>> '
+>>> sys.ps2  # 현재 보조 프롬프트
+'...: '
+>>> sys.ps1 = '(^o^) '  # 기본 프롬프트 변경
+
+(^o^) print('hello')
+hello
+(^o^) 5 * 3
+15
+(^o^) sys.exit()  # 인터프리터 끝내기
+\end{minted}
+변수 sys.path는 모듈 검색 경로 문자열들이 들어있는 리스트이다.
+sys.path 리스트의 첫 번째 요소로 현재 디렉토리가 자동으로 포함되어 있고, 새로운 경로를 추가하려면 sys.path 리스트에 append해주면 된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+import sys
+
+sys.path.append("/path/to/module") # 경로 추가
+
+# 경로 확인
+print(sys.path)
+>>> ['C:\\Users\\user\\anaconda3\\python312.zip',
+     'C:\\Users\\user\\anaconda3\\DLLs',
+     ...
+     'C:\\Users\\user\\Desktop\\2-1\\프로그래밍\\실습',
+     'C:\\Users\\user\\anaconda3\\Lib\\site-packages\\setuptools\\_vendor']
+\end{minted}
+
+\section{The dir() Function}
+dir 함수는 모듈이 정해주는 이름들의 리스트를 돌려주는데,\\
+크게 dir() 또는 dir(객체) 두 가지로 사용된다.\\
+\newline
+먼저, 인자가 없는 dir()은  현재 프로그램의 scope안에서 사용중인 변수들 \\즉 namespace 명단을 제공해준다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+x = 34
+y = 'Python'
+z = [1, 2, 3]
+
+dir()
+>>> ['__builtin__', '__builtins__', '__doc__',
+    ... 'exit', 'get_ipython', 'open', 'quit',
+    'x', 'y', 'z'] # 현재 사용중인 변수 x, y, z 확인 가능함
+\end{minted}
+객체명을 인자로 입력받게 되면, dir은 해당 객체의 attribute(변수, 메소드)명단을 돌려준다. 객체명으로는 변수, 함수, 모듈, 패키지, 데이터 타입 등이 올 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# dir(데이터 타입 클래스) -> int, str, float, ...
+dir(complex)
+>>> ['__abs__', '__add__', '__bool__',
+     '__class__', '__complex__', '__delattr__',
+     ...
+     '__truediv__', 'conjugate', 'imag', 'real']
+
+# dir(객체 또는 변수명)
+x = [1, 2, 3]
+dir(x)
+>>> ['__add__', '__class__',
+     '__class_getitem__', '__contains__',
+     ...
+     'pop', 'remove', 'reverse', 'sort']
+
+# dir(라이브러리 or 패키지 or 모듈명) -> math, random, matplotlib, ...
+import datetime
+dir(datetime)
+>>> ['MAXYEAR', 'MINYEAR', 'UTC', '__all__',
+     '__builtins__', '__cached__', '__doc__',
+     ...
+     'timedelta', 'timezone', 'tzinfo']
+# (내장 함수들 또한 dir()이 아닌 builtin 모듈을 인수로 하는 dir함수로 확인해야함)
+import builtins
+dir(builtins)
+>>> ['ArithmeticError', 'AssertionError',
+     'AttributeError', 'BaseException',
+     ...
+     'tuple', 'type', 'vars', 'zip']
+\end{minted}
+\section{Packages}
+패키지는 모듈을 모아 놓은 디렉토리를 말한다. “점으로 구분된 모듈 이름” 를 사용해서 파이썬의 모듈 네임스페이스를 구조화하는 방식이다. 예를 들어 패키지 A안에 있는 B라는 이름의 서브 모듈 이름은 A.B 가 된다.
+다른 모듈의 작성자들이 서로의 전역변수 이름에 대해 걱정할 필요가 없는 것과 마찬가지로, 여러 개의 모듈이 포함된 패키지의 작성자들은 서로의 모듈 이름들을 걱정하지 않아도 된다.
+
+패키지를 만들려면 우선 프로젝트 디렉토리(파일)을 만들어야 한다. 이 디렉토리의 이름이 패키지의 이름이 된다. 이제 모듈들을 추가하기 앞서  \_\_init\_\_.py 파일을 만들어야 한다.  \_\_init\_\_.py는 패키지를 초기화하는 데에 사용된다. 이 파일이 있어야 파이썬이 해당 디렉토리를 패키지로 인식하기 떄문에 초기화가 필요하지 않더라도 빈 파일을 생성해야 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+rootp/           # 최상위 패키지
+    __init__.py  # rootp 패키지 초기화
+    subp1/            # 서브패키지 1
+        __init__.py   # 서브패키지 1 초기화
+        mod1.py
+        mod2.py
+           ...
+    subp2/           # 서브패키지 2
+        __init__.py
+        mod3.py
+        mod4.py
+           ...
+    ...
+\end{minted}
+rootp, subp1, subp2는 패키지(디렉토리), 확장자가 .py인 파일들은 모듈이다.
+
+패키지로부터 개별 모듈을 임포트할 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 1. 전체 이름 참조
+import rootp.subp1.mod1
+rootp.subp1.mod1.func(input, output, delay=0.7, atten=4)
+
+# 2. 패키지 접두어 없이 모듈명 사용
+from rootp.subp1 import mod1
+mod1.func(input, output, delay=0.7, atten=4)
+
+# 3. 원하는 함수 또는 변수 직접 임포트하기
+from rootp.subp1.mod1 import func
+func(input, output, delay=0.7, atten=4)
+\end{minted}
+중요한 규칙: \\
+\textbf{import a.b.c} 형태의 임포트문에서 a, b는 항상 패키지여야 한다. 마지막에 오는 c는 패키지와 모듈 둘 다 가능하지만, 함수나 변수가 될 수는 없다. \\
+반면 \textbf{from package import item}는 package자리에 모듈 또는 패키지, item 자리에 패키지, 모듈, 함수, 변수, 클래스 등등이 허용되어서 유연한 문법이고, 훨씬 간결하게 사용 가능하다. * 주의할 점은, item이 패키지의 init파일에 정의되지 않고, 서브패키지의 서브모듈 안에 포함된 함수나 변수라면 ImportError가 발생한다. 이를 예방하려면 package의 경로가 충분히 구체적이어야 한다. (item이 있는 곳까지 안내해주어야함)
+
+\subsection{Importing * From a Package}
+from package import * 라고만 쓰는 것은 패키지 파일 안에 있는 모듈들을 효과적으로 불러오기에는 보기보다 효율적이지 않다. 그래서 *을 그냥 임포트하는 대신, 패키지의 init파일 안에 임포트해야 할 모듈들의 목록(\_\_all\_\_)을 명시해주는 단계가 필요하다.\\
+\newline
+예를 들어 파일 \textit{rootp/subp2/\_\_init\_\_.py} 안에 \textit{ \_\_all\_\_ = ["mod3",  "mod4", "mod5"]}라는 코드를 포함시켜주면, from \textit{rootp.subp2} import * 가 위에서 지정해준 모듈들을 불러오게 된다.
+
+모듈의 이름이 지역적으로 정의된 이름에 가려질 수 있다는 점도 주의해야 한다. \\
+만약 rootp/subp2/\_\_init\_\_.py 파일에 mod5라는 이름의 함수가 추가된다면,\\
+\_\_all\_\_ = ["mod3",  "mod4", "mod5"]에서 "mod5"는 더이상 모듈이 아닌 함수를 가리키게 되고  from \textit{rootp.subp2} import * 는 mod5라 모듈을 임포트하지 않는다.\\
+\newline
+\uline{\_\_all\_\_ 이 정의되지 않으면} from \textit{rootp.subp2} import * 는 subp2안의 서브 모듈들을  불러오지 않고 \uline{패키지 rootp.subp2와 그 패키지가 정의하는 이름들만 불러온다}. \\(패키지가 정의하는 이름들 = \_\_init\_\_.py 에 있는 초기화 코드에 명시된 이름들) \\init 파일 안에 정의되지 않았더라도, 이전에 임포트문을 통해 로드된 서브모듈이라면 import * 에 의해 현재 네임스페이스로 불려올 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# rootp/subp2/__init__.py
+pi = 3.14
+def function(): ...  # 직접 정의
+import rootp.subp2.mod3
+# 변수나 함수와는 다르게, 모듈은 init안에 파일 형태로 존재하는 것만으로는
+# * 을 통해 불려올 수 없음. init파일 안에서 import되어야 함.
+#---------------------
+# 실행 환경
+import rootp.subp2.mod5
+# from ~ inport * 보다 앞서서 임포트됨 -> 이미 subp2 안에 포함됨
+
+from rootp.subp2 import *
+''' --> pi, function, mod3, mod5 가 네임스페이스에 import됨 '''
+\end{minted}
+\subsection{Intra-package References}
+패키지가 여러 개의 서브 패키지로 구성되어있을 경우 이웃 패키지의 서브모듈을\\ 가져올 수 있는데 절대 임포트, 상대 임포트의 두 가지 방법이 있다.\\
+\vspace{-0.5cm}
+\newline
+my\_package 라는 가상의 패키지가 있다고 하자.
+\vspace{-0.5cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+my_package/
+        __init__.py
+        mod1.py
+        mod2.py
+        subp1/
+            __init__.py
+            mod_a.py
+            mod_b.py
+        subp2/
+            __init__.py
+            mod_c.py
+        ...
+\end{minted}
+\uline{절대 임포트}\\
+패키지 안에서 뿐만 아니라 어떤 모듈에서든 동일하게 작동하는 문법이다. \\
+(바깥에서 참조할때도 사용 가능) \\
+항상 최상위 패키지부터 경로가 시작된다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# mod_c에서 mod_a를 임포트할 때
+from my_package.subp1 import mod_a
+
+# 외부 패키지 python(예시) 에서 mod_a를 임포트할 때
+from my_package.subp1 import mod_a  # 동일한 경로
+\end{minted}
+\uline{상대 임포트}\\
+패키지 내부에서만 사용 가능하며, 현재 모듈의 위치를 기준으로 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 같은 디렉토리(my_package)의 형제 모듈
+# mod2 에서 mod1 임포트
+from . import mod1
+
+# 상위 디렉토리(my_package)에 소속된 모듈
+# mod_a 에서 mod1 임포트
+from .. import mod1
+
+# 같은 디렉토리의 서브패키지(subp1)에 속한 하위 모듈
+# mod1 에서 mod_a 임포트
+from .subp1 import mod_a
+
+# 다른 서브패키지(subp2)의 모듈 (같은 레벨)
+# mod_b 에서 mod_c 임포트
+from .. subp2 import mod_c
+
+# 다른 서브패키지(subp2)의 모듈(mod_c)의 함수
+# mod_b 에서 mod_c 안의 함수 임포트
+from .. subp2.mod_c import fx
+\end{minted}
+하지만 절대 임포트와 다르게 상대 임포트는 항상 가능하지는 않다.
+\begin{tcolorbox}[colback=black!15!white,colframe=black!15!white]
+\textit{상대 임포트를 위한 조건} \newline
+어떤 모듈에서 상대 경로 임포트를 하려면, 그 모듈은 반드시 어떤 패키지(상위 \\디렉토리)안에서 실행중이어야 한다. \\
+다시 말해, \uline{모듈의 \_\_name\_\_ 이 main이라면, 해당 모듈은 패키지의 일부로서 실행된 것이 아니기 때문에 상대 임포트 기능을 사용할 수 없다}.
+\end{tcolorbox}
+상대 경로는 \_\_name\_\_변수명을 통해 위치를 파악하고 경로를 계산하게 되는데, \\\_\_name\_\_이 "\_\_main\_\_"이 되면 상대 경로가 실행 파일의 실제 위치를  계산할 수 없다. \\
+(상대 경로는 반드시 기준 위치를 알아야 한다. 기준 위치로부터 다른 파일의 위치를 추적하기 때문이다.)\\
+따라서 모듈이 실제로 스크립트로 직접 실행된 경우, 또는 모듈이 패키지 모듈로서 실행되었는지를 파이썬이 명확하게 인식하지 못할 경우 오류가 발생할 수 있다.\\
+( ImportError: attempted relative import with no known parent package)\\
+따라서 안전한 임포트를 위해서는 많은 경우 절대임포트 방식이 더 적절하다.
+
+

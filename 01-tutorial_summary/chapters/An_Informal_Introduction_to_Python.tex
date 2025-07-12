@@ -1,0 +1,625 @@
+\begin{comment}
+Thank you for using the Unofficial University of Lincoln Computer Science Undergraduate Thesis template! This template was authored by Benjamin Williams, inspired heavily from the template I made for postgraduate theses. If you are a postgraduate please check out my other thesis template on the Overleaf gallery for PGR theses. If you have any troubles, requests, or issues please get in touch with me at \fbox{\centering\texttt{\textbf{bwilliams@lincoln.ac.uk}}}.
+
+\section{Cautionary Note}
+As hinted by the title, this template is the \textbf{unofficial} template for the UoL's SoCS. As such, it is worth consulting your supervisor on it's usage for your thesis before using it. You should definitely do some research into this -- double and triple check that you are okay to use it, and it conforms with \textbf{your} assignment requirements. I am not responsible if this template does not conform to what is needed. However, it is worth noting that:
+
+\begin{enumerate}
+    \item This template \emph{should} provide \emph{all} of the required formatting for your undergraduate thesis, as required by the module;
+    \item Provides auxillary environments for typesetting ease -- such as ludography and in-built features of \LaTeX, and;
+    \item Formats references automatically in accordance with Harvard referencing, a requirement for the UoL's SoCS undergraduate dissertations.
+\end{enumerate}
+
+
+This is your introductory chapter. I do not include any guidance on how to write these chapters, but instead show you how to operate features of the template. The template is pre-formatted in accordance to the School of Computer Science's undergraduate thesis requirements. For example, this is double-spaced with the correct margin values and header formats.
+
+\section{Template Structure}
+Over on the left of this screen (assuming you're in Overleaf), you should see the file structure of this template. There are a few folders and files which are important. It is worth noting that this structure is the one I follow, and you are free to use whatever structure works best for you. In this template, the \texttt{chapters} folder is where all the chapters throughout the document are located. This includes other sections, such as the abstract, acknowledgements and reflective analysis.
+
+By contrast, the \texttt{preamble} folder contains files which are used before the document is rendered. Think of this like the \texttt{head} tag in HTML: the files in this folder provide important meta-data (such as your name, student number etc) prior to the document being rendered. Your first task should be to modify this template, by opening up \texttt{preamble/details.tex} and inserting your own details. If you wish to use a package in your document, you can easily add it to the \texttt{preamble/packages.tex} file, and it will be imported.  Furthermore, the \texttt{preamble/bib-setup.tex} file is used to import references and set-up Bib\LaTeX, but that is covered later in this document.
+
+
+\section{Table of Tables (ToT) and Table of Figures (ToF)}
+At the beginning of this document, you probably noticed these two sections which were included before this chapter, and after the abstract. These are the table of figures and the table of tables. Lets include an image, and notice how it appears in the table of figures above as Figure \ref{fig:tof-example}.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=3cm, height=3cm]{logo.pdf}
+    \caption{The University of Lincoln's black-on-white crest, used in the title page of this thesis.}
+    \label{fig:tof-example}
+\end{figure}
+
+In addition, here is an example of a table. Whilst not strictly required, it is worth noting that Table \ref{tbl:example-table} (on the next page) is formatted in accordance to normal usage in scientific articles. If you wish to create tables, it's probably best to use a \LaTeX~tables generator, like \url{http://tablesgenerator.com/}.
+
+\begin{table}[htb]
+\centering
+\caption{A list of house plants and their details.}
+\begin{tabular}{l|l|l|l}
+\textbf{Name} & \textbf{Type} & \textbf{Location}         & \textbf{Size} \\
+\hline\hline
+Billy         & Peace Lily    & Living room, on bookshelf & Massive!      \\
+\hline
+Jezza         & Calathea      & Living room, on fireplace & Fairly big    \\
+\hline
+Juno          & Laurel Bush   & Kitchen Window            & Fairly big    \\
+\hline
+Jade          & Jade Plant    & Bathroom Window           & Mediumish     \\
+\hline
+Bernard II    & Ivy           & Kitchen Window            & Big           \\
+\hline
+Shelley       & Geranium      & Bedroom Window            & Small        \\
+\hline
+Benth         & Kalanchoe     & Desktop                   & Big
+\end{tabular}
+\label{tbl:example-table}
+\end{table}
+
+\section{Typesetting Math}
+As computer scientists, we often need to describe things with mathematical symbols or operators. Luckily, mathematical typesetting is part and parcel of \LaTeX, with many solutions to this problem. This template uses the \texttt{amsmath} package for mathematical typesetting, alongside the \texttt{amssymb} package. For example, you can use in-line math formatting (with single dollars) like this:
+
+\begin{framed}
+For each $\mathbf{p} \in P$, the weight $w = \left( \mathbf{p}_0 \cdot \mathbf{p}_2 \right) - \mathbf{p}_1$ was calculated. This linear operation had a time complexity of $\mathcal{O}(n)$.
+\end{framed}
+
+Double dollars will centre your math without an equation number, like so:
+
+\begin{framed}
+$$ f(x) = \int_{-\infty}^{\infty}{\hat{f}(\xi)e^{2\pi i x \xi}d\xi} $$
+\end{framed}
+
+And finally the \texttt{align} environment will allow to reference and align equations, like in Equation \ref{eqn:example1} and \ref{eqn:example2} below. Notice how both $=$ symbols are aligned horizontally.
+
+\begin{framed}
+\begin{align}
+a &= b + 1
+\label{eqn:example1} \\
+\frac{\hbar^2}{2m}\nabla^2\Psi + V(\mathbf{r})\Psi
+&= -i\hbar \frac{\partial\Psi}{\partial t}
+\label{eqn:example2}
+\end{align}
+\end{framed}
+
+But what if you want to align two or more equations but have no equation numbers? Well, thats a job for the \texttt{align*} environment:
+
+\begin{framed}
+\begin{align*}
+d(\mathbf{a}, \mathbf{b}) &= \sqrt{(a_0 - b_0)^2 + (a_1 - b_1)^2 + ... + (a_n - b_n)^2} \\
+        &= \sqrt{\sum_{i=0}{n}{(a_i - b_i)^2}} \\
+        &= || \mathbf{a} - \mathbf{b} || \\
+        &= \sqrt{(\mathbf{a} - \mathbf{b}) \cdot (\mathbf{a} - \mathbf{b})}
+\end{align*}
+\end{framed}
+
+
+\section{Hmm, the margins seem big? Especially on the left of the page?}
+Yeah, that's okay. This is done by design as your thesis will be printed and bound on one side, so you need extra room on the left so the text doesn't fall into the bind on your page.
+
+The margins used in this template are the standards for postgraduate research theses, which are also applicable for undergraduate theses too. The reason for the large margins and big spacing is so those marking your work can write in notes and red-pen your thesis easily. So yeah, don't worry about it!
+
+\cleardoublepage
+\end{comment}
+
+\section{Using Python as a Calculator}
+
+\subsection{Numbers}
+파이썬 콘솔에서 간단한 계산을 할 수 있다.
+%\begin{comment}
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{|l|l|l|}
+\hline
+우선순위 & 연산자            & 기능                  \\
+\hline\hline
+1       & ( )               & 괄호                  \\
+\hline
+2       & **                & 거듭제곱               \\
+\hline
+3       & +, -              & 부호                   \\
+\hline
+4       & +, /, //, \(\%\)  & 곱셈, 나눗셈, 몫, 나머지 \\
+\hline
+5       & +, -              & 더하기, 빼기            \\
+\hline
+\end{tabular}
+\label{tbl:example-table}
+\end{table}
+%\end{comment}
+대입연산자: 연산자+등호 형태이며,\\
+좌변의 값 또는 변수에 우변의 값을 연산하고 그 결과값을 변수에 다시 대입해준다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+8 / 5  #
+>>> 1.6
+(50 - 5*6) / 4  # 나눗셈을 하면 항상 float값을 돌려줌
+>>> 5.0
+
+a = 123
+a //= 6  # a를 6으로 나눈 몫을 다시 a에 할당함
+a >>> 3
+\end{minted}
+인터랙티브 모드에서는 가장 마지막 계산 결과를 \_ 변수로 나타낼 수 있다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+tax = 12.5/100 ; price = 100.50
+# 한 줄에 여러 개의 변수를 입력할 때는 세미콜론을 이용해야 함
+price * tax
+>>> 12.5625
+price + _
+>>> 113.0625
+
+round(_,2)  # 소수점 아래 둘째자리까지
+>>> 113.06
+round(_)
+>>> 113  # 일의 자리까지
+\end{minted}
+파이썬에서 지원하는 숫자 자료형:\\
+1) int, float
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 정수형
+a = 123  # 기본적으로 부호가 있는 정수는 int 타입으로 처리됩니다.
+b = 0b1010  # 2진수를 나타내는 접두어 0b를 붙여서 표기합니다.
+c = 0o123  # 8진수를 나타내는 접두어 0o를 붙여서 표기합니다.
+d = 0x1A  # 16진수를 나타내는 접두어 0x를 붙여서 표기합니다.
+e = 123_456_789  # 언더바(_)로 자릿수를 구분할 수 있습니다. (파이썬 3.6부터 지원)
+f = 0x_FF_00_FF  # 언더바(_)로 자릿수를 구분할 수 있습니다. (파이썬 3.6부터 지원)
+
+# 실수형
+a = 3.14
+b = 3.0
+c = 3e8  # 지수 표기법으로 표현할 수 있습니다. (3 * 10^8)
+d = 1.23e-4  # 지수 표기법으로 표현할 수 있습니다. (1.23 * 10^-4)
+\end{minted}
+2)  decimal
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+''' decimal '''
+from decimal import Decimal, getcontext
+
+f = 0.1 + 0.2
+f
+>>> 0.30000000000000004
+
+d = Decimal('0.1') + Decimal('0.2')
+d
+>>> Decimal('0.3')
+
+# 실수형 숫자를 그대로 사용하면 부동소수점 문제가 똑같이 발생함
+d = Decimal(0.1) + Decimal(0.2)
+d
+>>> Decimal('0.3000000000000000166533453694')
+
+# 정확도 설정
+getcontext().prec = 6  # 소수점 아래 6자리 정확도
+print(Decimal(1)/Decimal(7))
+>>> 0.142857
+
+# decimal과 int는 연산이 가능하지만 float와 연산을 시도하면 에러 발생
+d = Decimal('10.5')
+i = 2
+f = 2.2
+print(d + i) >>> 12.5
+print(d * i) >>> 21.0
+print(d / i) >>> 5.25
+print(d + f)
+>>> TypeError: unsupported operand type(s) for +: 'decimal.Decimal' and 'float'
+\end{minted}
+3) fraction
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+''' fraction '''
+from fractions import Fraction as Frac
+
+f1 = Frac(3, 4)
+f1
+>>> Fraction(3, 4)
+print(f1)
+>>> 3/4
+
+float_num = 0.375
+f2 = Frac.from_float(float_num)
+print(f2)
+>>> 3/8
+print(fraction1) # 3/4
+fraction2 = Fraction(6, 8)
+simplified_fraction = fraction2.limit_denominator()
+
+# Simplifying a fraction
+from math import pi, cos
+
+Frac.from_float(pi)
+>>> Fraction(884279719003555, 281474976710656)
+
+# 분모 값이 100미만인 Fraction객체중 가장 가까운 분수 반환
+Frac.from_float(pi).limit_denominator(100)
+>>> Fraction(311, 99)
+\end{minted}
+4) complex
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 복소수 생성
+z1 = complex(3, 4)  # 3 + 4j
+z2 = 3 + 4j         # 3 + 4j
+
+z = 3 + 4j
+print(z.real)  # 3.0
+print(z.imag)  # 4.0
+
+# 연산
+z1 = 3 + 4j
+z2 = 1 - 2j
+
+add = z1 + z2
+sub = z1 - z2
+mul = z1 * z2
+div = z1 / z2
+print(add)  # (4+2j)
+print(sub)  # (2+6j)
+print(mult)  # (11+2j)
+print(div)  # (-1+2j)
+
+# 복소수의 절댓값
+z = 3 + 4j
+magnitude = abs(z)  # sqrt(3**2 + 4**2)
+print(magnitude)     # 5.0
+
+# 복소켤레
+z = 3 + 4j
+con_z = z.conjugate()  # 3 - 4j
+print(con_z)           # 출력: (3-4j)
+
+# 극좌표 변환
+import cmath
+
+z = 3 + 4j
+r, theta = cmath.polar(z)  # 극좌표 변환
+print(r)       # 5.0 (절댓값)
+print(theta)   # 0.9272952180016122 (라디안 단위 각도)
+
+# 극좌표 -> 직교좌표 변환
+z_rect = cmath.rect(r, theta)
+print(z_rect)  # 출력: (3.0000000000000004+3.9999999999999996j)
+\end{minted}
+
+\subsection{Text}
+문자열은 작은따옴표 또는 큰따옴표로 둘러싸서 나타낼 수 있다.\\
+여러 줄을 한꺼번에 나타내고 싶을 때는 ''' ... ''' 또는 """ ... """를 사용한다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 두 개 이상의 문자열이 연속해서 나타나면 자동으로 이어붙여짐
+print('안녕하세요 '
+       "2025")
+# 문자열 안에서 따옴표를 쓰고 싶다면 바깥의 따옴표와 다른 종류를 사용해야 함
+print("hello, 'python'")
+
+>>> 안녕하세요 2025
+    hello, 'python'
+
+print("""\
+ 메뉴를 선택하세요
+- 김밥      3000원
+- 라면      2500원
+- 떡볶이    4000원
+""")
+>>>  메뉴를 선택하세요
+    - 김밥      3000원
+    - 라면      2500원
+    - 떡볶이    4000원
+\end{minted}\\
+
+이스케이프 코드는 출력물을 보기 좋게 정렬하기 위해 정의해둔 문자 조합이다. \\
+맨 위부터 4개가 가장 자주 쓰인다.
+%\begin{comment}
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{|l|l|}
+\hline
+ 코드            & 기능                                 \\
+\hline\hline
+ \textbackslash n              & 줄바꿈                               \\
+\hline
+ \textbackslash t              & 탭                                   \\
+\hline
+ \textbackslash \textbackslash     &  문자 \textbackslash 를 그대로 출력할 때              \\
+\hline
+ \textbackslash', \textbackslash"          & 작은따옴표, 큰따옴표를 그대로 출력할 때  \\
+\hline
+ \textbackslash r              & 캐리지 리턴                           \\
+\hline
+ \textbackslash b              & 백스페이스                            \\
+\hline
+\end{tabular}
+\label{tbl:example-table}
+\end{table}
+%\end{comment}
+\\여기에서 캐리지 리턴과 백스페이스란,\\
+어떤 문자열을 같은 줄 또는 다음 줄에 이어서 출력하는 대신, \uline{이전에 썼던 내용에 덮어쓰도록 하는 코드}를 말한다. \\
+\textbackslash r 은 해당 줄 전체를, \textbackslash b는 바로 앞의 문자를 제외하고 나머지 문자열들을 출력해주는 역할을 한다.
+\newpage
+캐리지 리턴 사용 예시
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+import time
+
+for i in range(1,11):
+    print(f'진행 중: {i*10}%')
+    # 지연 시간 추가
+    # time.sleep(초) : 입력한 시간만큼 프로그램을 일시정지하는 함수
+    time.sleep(1)
+print('완료!')
+
+>>> 진행 중: 10%
+    진행 중: 20%
+    진행 중: 30%
+    ...
+    진행 중: 90%
+    진행 중: 100%
+    완료!
+
+# \r 추가한 코드
+for i in range(1,11):
+    # 같은 줄에 출력되어야 기존 내용을 덮어쓸 수 있으므로 end='' 사용
+    print(f'\r진행 중: {i*10}%', end='')
+    time.sleep(1)
+# 진행 중: 100% 까지 출력한 후 그 다음 줄에 완료!를 출력하기 위해 '\n' 사용
+print('\n완료!')
+
+>>> 진행 중: 100%  # 실제로는 1초에 한번씩 10%, 20%, ...으로 출력값이 덮어씌워짐
+    완료!
+\end{minted}
+\newpage
+\uline{문자열 인덱싱, 슬라이싱}\\
+첫 번째 글자는 0으로 인덱싱하므로 n번쨰 글자의 인덱스는 n-1이다. \\
+마지막 글자부터 카운트할 때의 시작 인덱스는 -0이 아닌 -1이다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+a = '0123456789'
+b = 'hello world!'
+
+a[0] # '0' (첫번째 글자)
+b[-4] # 'r' (뒤에서 4번째 글자)
+
+a[1:4] # '123' (1번부터 3번까지)
+a[2:-2] # '234567' # (2번 ~ -3번 (마지막 인덱스는 포함X))
+b[-4:] # 'rld!' (-4번부터 끝까지)
+b[:] # 'hello world!' (문자열 전체)
+
+a[0] = '9' # 문자열은 불변 객체이므로 대입 연산이 불가능하다
+>>> TypeError: 'str' object does not support item assignment
+'9' + a[1:] # '9123456789' (대입하려는 문자열 + 나머지 문자열 슬라이싱)
+len(b) # 12 (문자열 b의 길이)
+
+a[1::2] # '13579' (1번 글자부터 2칸씩 전진)
+a[::3] # '0369' (처음 위치부터 끝까지 3칸씩 전진)
+
+b[::-1] # '!dlrow olleh' (끝 위치부터 처음 위치까지 1칸씩 후진)
+b[4::-2] # 'olh' (4번부터 끝까지 2칸씩 후진)
+
+a[1:8:2] # '1357' (1번부터 8번 바로 앞(7번)까지 2칸씩 전진)
+a[-1:6:-1] # '987' (-1번부터 6번 바로 뒤(7번)까지 1칸씩 후진)
+
+b[:7:3] # 'hlw' (처음부터 7번 바로 앞(6번)까지 3칸씩 전진)
+b[-1:-5:-2] # '!l' (-1번부터 -5번 바로 뒤(-4번)까지 -2칸씩 후진)
+\end{minted}
+
+\subsection{Lists}
+리스트는 쉼표로 구분된 값들을 대괄호로 묶은 형태의 컴파운드 자료형이다.\\
+여러 타입의 요소들을 포함할 수 있지만, 대부분 경우에는 항목들의 자료형이 모두 같다.\\
+
+리스트도 문자열과 마찬가지로 인덱싱, 슬라이싱, 이어붙이기와 같은 연산이 가능하다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+squares = [1, 4, 9, 16, 25]
+squares[0]  # 인덱싱은 항목을 돌려줌
+>>> 1
+squares[-1]
+>>> 25
+squares[-3:]  # 슬라이싱은 새 리스트를 만들어줌
+>>> [9, 16, 25]
+squares + [36, 49, 64, 81, 100]
+>>> [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+\end{minted}
+반면, 문자열과 다르게 리스트는 내용을 변경할 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 세제곱 리스트
+cubes = [1, 8, 27, 65, 125]  # 3번 인덱스의 값을 수정해야함
+cubes[3] = 64
+cubes
+>>> [1, 8, 27, 64, 125]
+\end{minted}
+\newpage
+append() 메서드로 리스트의 끝에 항목을 추가할 수도 있다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+cubes[5]=216 # 마지막 인덱스가 4인 리스트에 216이라는 요소 추가
+>>> IndexError: list assignment index out of range
+# 메서드 append를 사용해야 한다.
+
+# 다양한 자료형 append 가능
+cubes.append('216') # 문자열
+# [1, 8, 27, 64, 125, '216']
+cubes.append(7**3) # 숫자(계산결과)
+#[1, 8, 27, 64, 125, '216', 343]
+cubes.append([512, 9**3]) # 리스트
+# [1, 8, 27, 64, 125, '216', 343, [512, 729]] # 중첩 리스트가 만들어짐
+\end{minted}
+똑같은 리스트를 다른 변수에 저장하는 방법 2가지:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+''' 1. 변수 할당
+    : 동일한 리스트를 가리키는 또다른 변수 생성 '''
+
+rgb = ["Red", "Green", "Blue"]
+rgb1 = rgb
+
+# id(): 객체의 주소값을 반환하는 함수 / 동일한 객체인지 판별 가능
+id(rgb) == id(rgb1)
+>>> True # 같은 객체를 참조한다
+
+rgb1.append("Alph")
+rgb
+>>> ['Red', 'Green', 'Blue', 'Alph']
+# 원본 리스트인 rgb에도 변경사항이 똑같이 적용됨
+
+''' 2. 얕은 복사
+    : 같은 항목들을 포함하는 새로운 리스트 생성 '''
+
+rgb = ["Red", "Green", "Blue"]
+rgb2 = rgb[:] # 슬라이싱은 항상 새 리스트를 돌려줌
+
+rgb2
+>>> ["Red", "Green", "Blue"]
+id(rgb) == id(rgb2)
+>>> False  # 두 리스트는 내부 항목이 모두 같지만 다른 객체이다
+
+rgb2.append("Alph")
+rgb2
+>>> ['Red', 'Green', 'Blue', 'Alph']
+rgb
+>>> ["Red", "Green", "Blue"] # rgb 리스트에 영향 없음
+\end{minted}
+슬라이싱을 통해 새로운 리스트 슬라이스를 얻는 것 외에도 다양한 작업이 가능하다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 항목 대입
+letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+letters[1::2] = [1, 3, 5]  # 'b', 'd', 'f' 자리에 1, 3, 5 대입
+letters
+>>> ['a', 1, 'c', 3, 'e', 5, 'g']
+
+letters[:2] = ['A', 'B', 'C', 'D', 'E'] # 0,1번 인덱스 자리에 삽입
+letters
+>>> ['A', 'B', 'C', 'D', 'E', 'c', 3, 'e', 5, 'g']
+
+len(letters)
+>>> 10  # 리스트 길이 바뀜
+
+# 항목 삭제
+letters[2:8] = []
+letters
+>>> ['A', 'B', 5, 'g']
+
+# 리스트 비우기
+letters[:] = []
+letters
+>>> []
+\end{minted}
+
+%\section{First Steps Towards Programming}

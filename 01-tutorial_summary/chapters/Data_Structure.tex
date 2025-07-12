@@ -1,0 +1,1173 @@
+%5.1
+\vspace{-1cm}
+\section{More on Lists}
+
+The list data type has some more methods. Here are all of the methods of list objects:
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{|l|l|l|}
+\textbf{Method} & \textbf{Argument}      & \textbf{Operation}                                                                                       \\
+\hline\hline
+append          & x (item)               & Add an item to the end of the list                                                                       \\
+\hline
+extend          & iterable               & Extend the list by appending all the items from the iterable                                             \\
+                &                        & (similar to A[len(A):] = iterable)                                                                       \\
+\hline
+insert          & i(index), x(item)      & Insert an item at a given position                                                                       \\
+\hline
+remove          & item                   & Remove the first item \uline{whose value is equal to x}.                                                 \\
+                &                        & (\textit{ValueError} if there is no such item).                                                          \\
+\hline
+pop             & index                  & Remove the item \uline{at the given position}, and return it                                             \\
+\hline
+clear           &                        & Remove all items from the list                                                                           \\
+\hline
+index           & x(, i\_start, i\_end)  & Return index of the first item whose value is x.                                                         \\
+                &                        & (ValueError if there is no such item)                                                                    \\
+\hline
+count           & item                   & Return the number of times x appears in the list                                                         \\
+\hline
+sort            & *, key=, reverse=      & Sort the items of the list in place (key=비교 기준)                                                       \\
+\hline
+reverse         &                        & Reverse the elements of the list in place                                                                \\
+\hline
+copy            &                        & Return a shallow copy of the list. (Similar to A[:])
+\end{tabular}
+\label{tbl:example-table}
+\end{table}
+
+\newpage
+
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+fruits = ['orange', 'apple', 'pear', 'banana', 'kiwi', 'apple', 'banana']
+
+fruits.count('apple')  #0
+fruits.count('tangerine')  #0
+
+fruits.index('banana')  #3
+fruits.index('banana', 4)
+# kiwi(=fruits[4]) 이후에 나타나는 banana의 인덱스를 돌려줌
+
+fruits.reverse()
+# ['banana', 'apple', 'kiwi', 'banana', 'pear', 'apple', 'orange']
+fruits.sort(reverse=True)
+# ['pear', 'orange', 'kiwi', 'banana', 'banana', 'apple', 'apple']
+
+fruits.pop() # apple -> 인덱스 값이 정해지지 않으면 마지막 요소를 삭제하고 돌려줌
+
+fruits.sort(key = lambda x : x[2])
+# ['pear', 'orange', 'grape', 'banana', 'banana', 'apple', 'apple', 'kiwi']
+# 각 아이템의 세번째 글자(인덱스 2)를 기준으로 정렬
+\end{minted}
+
+If statement can be followed by zero or more elif parts, and else part is optional
+We use elif short for ‘else if’ in order to avoid excessive indentation
+
+* when we’re comparing the same value to several constants, or checking for specific types or attributes, match statement would useful (see 2.7.)
+
+\newpage
+
+%=================================================================================
+\subsection{Using Lists as Stacks}
+stacks: "Last-in, first-out"
+-> 아이템 추가: append(),  삭제: pop()
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+stack = [3, 4, 5]
+
+stack.append(6) # [3, 4, 5, 6]
+stack.append(7) # [3, 4, 5, 6, 7]
+
+stack.pop() # 7 : 가장 최근에 추가했던 아이템을 삭제하고 돌려줌
+stack.pop() # 6
+\end{minted}
+
+\subsection{Using Lists as Queues}
+queues: “first-in, first-out”
+lists are not efficient for this purpose. 리스트의 끝에서 append와 pop을 하는 것은 빠르지만, 리스트의 시작 부분에서 insert와 pop을 하는 것은 느림. (맨 앞에 요소가 추가되거나 제거될 때 나머지 요소들도 한 칸씩 움직여야 하기 때문에)
+
+그 대신, 더 효율적으로 큐를 구현하기 위해서는 collections 모듈의 deque를 사용한다.
+deque(데크): double-ended queue
+list와 매우 유사하고 사용할 수 있는 메서드도 대부분 일치하지만, 앞과 뒤에서 데이터를 처리 가능한 양방향 자료형임. 추가로 다음과 같은 메서드가 제공됨\\
+- appendleft(x): 데크의 왼쪽에 x 추가\\
+  : 리스트에서 insert(0, x)와 같음
+- popleft(x): 데크의 왼쪽에서 요소를 제거
+  : 리스트에서 pop(0)과 같음
+
+\subsection{List Comprehensions}
+- 다른 시퀀스 또는 iterable의 요소들에 대해 어떤 연산을 했을 때의 결과값을 요소로 가지는 새로운 리스트 만들 때.
+- 또는 그 요소들 중 어떠한 조건을 만족시키는 데이터만을 요소로 가지는 부분 시퀀스를 만들 때 유용함
+list = [(expression of x) for x in (sequence)]
+
+똑같은 리스트를 세 가지 방법으로 만들어볼 수 있음\\
+예제: 0부터 5까지의 정수 n에 대해 $n^2$을 요소로 가지는 리스트 만들기\\
+-> [0, 1, 4, 9, 16, 25]\\
+\newline
+1. for 루프로 빈 리스트에 요소 채우기
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+squares = []
+for x in range(6):
+    squares.append(x**2)
+\end{minted}
+2. map(), lambda expression
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+squares = list(map(lambda x: x**2, range(6)))
+\end{minted}
+3. 리스트 내포
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+squares = [x**2 for x in range(6)]
+\end{minted}
+\newpage
+for, if 문을 포함하는 리스트 내포\\
+\newline
+e.g.1) 순서쌍 리스트 만들기
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 1부터 5까지의 서로 다른 두 수
+a=[(y, x) for x in range(1,6) for y in range(1,6) if y!=x]
+print(a)
+print(len(a))
+>>> [(1, 2), (1, 3), (1, 4), (1, 5), ... (5, 1), (5, 2), (5, 3), (5, 4)]
+    20
+
+# 중복을 허용하지 않을 때
+a=[(x, y) for x in range(1,6) for y in range(1,6) if y<x]
+'''
+(or, [(x, y) for x in range(1,6) for y in range(1,x)]
+-> y가 x보다 작은 값만 가지도록 범위를 설정할 수도 있음)
+'''
+print(a)
+print(len(a))
+>>> [(2, 1), (3, 1), (3, 2), ... (5, 1), (5, 2), (5, 3), (5, 4)]
+    10  # 순서쌍의 개수는 절반이 됨
+\end{minted}
+
+* 튜플을 요소로 하는 경우 꼭 괄호로 감싸야 함\\
+a=[x, y for x in ... ]\\
+\(\rightarrow\) SyntaxError: did you forget parentheses around the comprehension target?\\
+\newpage
+e.g.2) 집합 기본 연산
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+A=[-1,-2,3,-4,-5,6]
+B=[4,5,6,7,8]
+C=[-x for x in A]
+# create a new list from A with the value multiplied by -1
+
+dif=[x for x in A if not x in B]  # 차집합 A-B
+# filter the list to exclude numbers in B
+
+inter=[x for x in C if x in B]  # 교집합 B, C
+# filter the list to only include numbers both in B and C
+
+union=list(set([abs(x) for x in A+B])) # 합집합 A, B
+# apply a function (absolute) to all the elements
+\end{minted}
+
+복잡한 표현식이나 중첩 함수를 포함한 리스트 내포도 가능함. \\(* 중첩 함수: 함수 안에 다른 함수가 정의된 형태)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 0 부터 2π 까지 π/2씩 증가하는 라디안 값들을 도 단위로 바꾸기
+# 결과값 요소의 소수점 이하는 생략하고 문자열로 변환
+
+from math import *
+# 사용한 메소드: floor, degrees, pi
+import numpy as np
+# 사용한 메소드: arange, 구간의 크기를 정수가 아닌 값으로 설정하기 위해
+
+list_deg= [str(floor(degrees(i))) for i in np.arange(0, pi*2.1, pi/2)]
+
+>>> ['0', '90', '180', '270', '360']
+\end{minted}
+\newpage
+주의:\\
+1) 조건부 표현식(삼항연산자) 문법: else문에서 변수에 값 또는 표현식 할당할 수 없음\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+A=[x if x%2 == 1 else 0 for x in range(1,10)] # 값
+>>> [1, 0, 3, 0, 5, 0, 7, 0, 9]
+
+A=[x if x%2 == 1 else x*2 for x in range(1,10)] # 표현식
+>>> [1, 4, 3, 8, 5, 12, 7, 16, 9]
+
+A=[x if x%2 == 1 else x=0 for x in range(1,10)]
+# SyntaxError: cannot assign to conditional expression
+\end{minted}
+%
+2) if-else 문은 for문 앞에서 사용해야 하고, \\
+반대로 for문과 if문만을 쓸 때는 if문이 for문 뒤에 와야 함.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+odd_only=[x for x in range(10) if x%2 == 1]
+>>> [1,3,5,7,9]
+
+odd_only=[x if x%2 == 1 for x in range(10)]
+# SyntaxError: expected 'else' after 'if' expression
+
+#-------------------------
+
+find_odd=[x if x%2 == 0 else 'odd' for x in range(10)]
+>>> [0, 'odd', 2, 'odd', 4, 'odd', 6, 'odd', 8, 'odd']
+
+find_odd=[x for x in range(10) if x%2 == 0 else 'odd']
+# SyntaxError: invalid syntax
+\end{minted}
+\newpage
+3) 이중 for문을 리스트 내포로 표현 시 바깥쪽 for문의 변수를 먼저 정의해야함.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+vec = [[1,2,3], [4,5,6], [7,8,9]]
+
+p=[num for elem in vec for num in elem]
+>>> [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+q=[num for num in elem for elem in vec]
+# NameError: name is not defined
+\end{minted}
+
+\subsection{Nested(중첩) List Comprehensions}
+: 리스트 내포의 첫 번째 표현식 자리에 또다른 listcomp를 넣을 수도 있음.
+
+ e.g.) 3x4 행렬
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 3X4: 길이 4인 리스트 3개
+matrix = [
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+]
+
+# 전치행렬 만들기
+T = [[row[i] for row in matrix] for i in range(4)]
+>>> [ [1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12] ]
+# (matrix안에 있는 리스트들을 각각 A, B, C라 하면,)
+# T = [ [A[0], B[0], C[0]], ... ,[A[3], B[3], C[3]] ]
+\end{minted}
+\newpage
+마찬가지로 for 반복문을 이용해서 똑같이 만들 수 있음
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+'''for문'''
+T = []
+for i in range(4):
+    T.append([row[i] for row in matrix])
+# inner list comprehension is evaluated -
+# in the context of the for clause that follows it
+
+'''이중 for문'''
+T = []
+for i in range(4):
+    transposed_row = [] # 전치행렬의 행이 될 리스트
+    for row in matrix:
+        transposed_row.append(row[i])
+   T.append(transposed_row)
+# i값에 대한 for문이 가장 바깥쪽에 있으므로
+# .append(row[i])를 matrix안의 모든 row들에 대해 완료해야 다음 i값으로 넘어갈 수 있음
+\end{minted}
+
+복잡한 구문들보다는 내장 함수를 사용하는 것이 좋음. \\
+e.g. zip( )
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+A = [1, 2, 3, 4],
+B = [5, 6, 7, 8],
+C = [9, 10, 11, 12]
+matrix = [A, B, C]
+
+list(zip(*matrix)) # 2.9 unpacking argument lists
+# = list(zip(A, B, C))
+>>> [[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]]
+
+# zip 함수 ?
+x = [1, 2, 3]
+y = [4, 5, 6]
+list(zip(x, y))
+>>> [(1, 4), (2, 5), (3, 6)]
+\end{minted}
+
+
+\section{The del statement}
+값 대신 인덱스를 사용해서 리스트 항목 삭제하기\\
+pop() 메소드 또한 요소를 제거하기 위해 인덱스를 입력받지만, 삭제된 값을 돌려준다는 점에서 del 문과 다름
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+a = [-1, 1, 66.25, 333, 333, 1234.5]
+
+del a[0] # 첫 번째 아이템 삭제
+>>> [1, 66.25, 333, 333, 1234.5]
+
+del a[2:4] # 슬라이스 삭제
+>>> [1, 66.25, 1234.5]
+
+del a[:] # 리스트 비우기
+>>> []
+
+del a # 리스트가 할당된 변수 자체를 삭제함
+# 이후에 다시 a를 참조하면 에러가 발생함
+\end{minted}
+
+\section{Tuples and Sequences}
+
+시퀀스 자료형: string, list, range, \uline{tuple}\\
+튜플은 쉽표로 분리된 여러 개의 값들로 구성됨.\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 튜플 요소에는 인덱스를 이용해 접근할수있음
+t = 12345, 54321, 'hello!'
+t[0]
+>>> 12345
+
+# 튜플은 중첩될 수 있음
+# 중첩 튜플, 또는 다른 표현식의 일부로 튜플을 사용하려면 괄호로 둘러싸야 함
+u = t, (1, 2, 3, 4, 5)
+>>> ((12345, 54321, 'hello!'), (1, 2, 3, 4, 5))
+
+# 튜플은 불변 객체
+t[0] = 88888
+
+# 가변 객체를 포함하는 것은 가능
+v = ([1, 2, 3], [3, 2, 1])
+\end{minted}
+튜플은 리스트와 비슷해 보이지만 다른 상황에서 다른 목적으로 사용된다. \renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{l|l|l}
+                       & \textbf{List}            & \textbf{Tuple}        \\
+\hline\hline
+가변성                  & mutable                  & immutable             \\
+\hline
+구성요소들의 데이터 타입  & homogeneous              & heterogeneous         \\
+\hline
+요소 접근 방식           & iterating over the list  & unpacking or indexing *\\
+\end{tabular}
+\end{table}
+\\ * namedtuple의 경우 속성(attribute)을 통해 요소에 접근할 수도 있다. \\
+(다음 페이지 예시 참고)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from collections import namedtuple
+
+data = [
+     ('스폰지밥', 12, 15.34),
+     ('징징이', 21, 25.4),
+     ('집게사장', 56, 17.78),
+]
+
+Employee = namedtuple('Employee', 'name, age, height')
+# Employee는 name, age, height 속성을 가지는 클래스처럼 작동함
+# (namedtuple은 'name, age, height'을 자동으로 .split()해줌)
+
+data=[Employee(emp[0], emp[1], emp[2]) for emp in data]
+# _make 함수 사용 -> [Employee._make(emp) for emp in data]
+print(data)
+>>> [ Employee(name='스폰지밥', age=12, height=15.34),
+      Employee(name='징징이', age=21, height=25.4),
+      Employee(name='집게사장', age=29, height=17.78) ]
+
+emp = data[1] # 2번째 직원
+emp.name # 징징이
+emp.age # 21
+emp.height # 25.4
+
+Emp_dict=[emp._asdict() for emp in data)] # _asdict 함수: 사전으로 변환
+print(Emp_dict)
+>>> [{'name':'스폰지밥', 'age':12, 'height'=15.34},
+     {'name':'징징이', 'age':21, 'height'=25.4},
+     {'name':'집게사장', 'age':29, 'height'=17.78}]
+\end{minted}
+\newpage
+빈 튜플 또는 한 개의 아이템만 가지는 튜플
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+empty = () # 빈 튜플은 비어있는 괄호 쌍으로 만듦
+par = ('hello') # 괄호만 -> 문자열
+com = 'hello', # 쉼표만(또는 괄호+쉼표) -> 튜플
+
+empty
+len(empty)
+type(empty)
+>>> ()
+    0
+    <class 'tuple'>
+par
+len(par)
+type(par)
+>>> hello
+    5
+    <class 'str'>
+com
+len(com)
+type(com)
+>>> ('hello',)
+    1
+    <class 'tuple'>
+\end{minted}
+\newpage
+튜플 패킹, 언패킹:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+t = 12345, 54321, 'hello!'  # 튜플 패킹
+x, y, z = t  # 시퀀스 언패킹
+
+x, y, z = 12345, 54321, 'hello!'  # 다중 할당 (multiple assignment)
+# 단순히 튜플 패킹과 시퀀스 언패킹의 조합임
+\end{minted}
+시퀀스 언패킹에서는 우변에 튜플 이외에도  어떤 시퀀스든 올 수 있음. 단, 좌변에는 \\
+우변의 시퀀스에 있는 요소들과 같은 개수의 변수들이 있어야 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 언패킹 가능한 형태라면 어떤 꼴이든 상관 없음
+l,m,n = [1, 2, 3]
+i,j,k = range(3)
+x,y,z = "abc"
+
+print(x,y,z)
+>>> a b c
+\end{minted}
+
+\section{Sets}
+Set(집합)란 순서가 없고 중복되는 요소가 없는 자료구조이다. 주로 어떤 요소가 데이터 컬렉션 안에 존재하는지 검사(멤버십 테스팅)할 때, 또는 중복되는 항목을 제거하기 위한 목적으로 사용된다. 세트 객체는 여러가지 집합 연산도 지원한다.
+
+세트는 요소들을 중괄호로 감싸거나 set() 함수를 사용해 만든다. 이때 빈 세트는 둘 중 set()함수를 사용해야 한다. (\{ \}는 세트가 아닌 빈 딕셔너리를 의미함)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+print(basket)
+>>> {'orange', 'banana', 'pear', 'apple'}  # 중복 제거됨
+'peach' in basket   # 멤버십 테스팅
+>>> False
+
+a = set('AaBbCDAB')
+b = set('1a2bCDz34')
+
+b  # unique letters in b
+>>> {'4', 'b', '2', 'D', 'C', 'a', '1', 'z', '3'}  # 순서 무작위
+len(b)
+>>> 9
+
+a-b   # 차집합
+>>> {'B', 'A'}
+a|b   # 합집합 ('|' = 'or')
+>>> {'4', 'b', 'B', 'D', '2', 'C', 'a', '1', 'z', '3', 'A'}
+a&b   # 교집합
+>>> {'a', 'b', 'D', 'C'}
+# 대칭 차집합 구하는 여러 가지 방법
+a^b
+>>> {'4', 'B', '2', '1', 'z', '3', 'A'}
+(a-b)|(b-a)
+>>> {'4', '1', 'B', 'z', '3', '2', 'A'}
+(a|b) - (a&b)
+>>> {'4', 'B', '2', '1', 'z', '3', 'A'}
+
+a == b  # a와 b가 완전히 같은 집합인지
+>>> False
+a.isdisjoint(b) # a와 b가 완전히 다른 집합인지 (교집합 없음)
+>>> False
+\end{minted}
+
+집합은 가변 객체이기 때문에 리스트와 비슷한 여러 함수가 지원된다.
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Method} & \textbf{Argument}      & \textbf{Operation}                       \\
+\hline\hline
+add             & item         & Add an item to the set                             \\
+\hline
+update          & iterable     & Extend by adding all the items from the iterable   \\
+\hline
+remove          & item         & Remove the item                                    \\
+                &              & (자료 안에 값이 없으면 ValueError발생)                \\
+\hline
+discard         & item         & Safely remove the item                              \\
+                &              & (있으면 삭제/없으면 아무 일도 일어나지 않음)            \\
+\hline
+pop             &              & Remove random item and return it                    \\
+\hline
+clear           &              & 모든 요소 제거 , 제거 후 print하면 set()가 출력됨       \\
+\hline
+\end{tabular}
+\end{table}
+%(집합의 맨 앞에 있는 요소가 제거되는 것처럼 보이지만 집합 내부에서 정해진 순서가 없기 때문에 결국은 임의의 요소가 삭제된다고 할 수 있다
+\\리스트 내포와 같이, 집합에서도 컴프리헨션을 사용할 수 있다:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+a = {x for x in 'abracadabra' if x not in 'abc'}
+>>> {'r', 'd'}
+
+num=[n for n in range(2,36)]
+s={(x,y) for x in num for y in num if x<=y and x*y==36}
+>>> {(3, 12), (4, 9), (6, 6), (2, 18)}
+\end{minted}
+set.add() 함수를 이용해 for문으로도 만들 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+s = set()
+num=[n for n in range(2,36)]
+for x in num:
+    for y in num:
+        if x<=y and x*y==36:
+            s.add((x,y))  # s.add(x,y):오류 발생(2 argument given)
+print(s)
+\end{minted}
+\newpage
+주의: 리스트와 달리 세트는 불변 객체만을 요소로 가질 수 있기 때문에\\
+표현식 자리에 리스트, 딕셔너리, 또다른 세트 등 가변 객체가 오면 오류가 발생한다.\\
+\(\rightarrow\) 세트 안에 세트의 특징을 가지는 객체를 포함하고 싶다면 frozenset을 쓸 수 있다\\
+frozenset는 set와 거의 동일한 기능을 하지만, 튜플과 같이 한 번 할당된 값은 변경이 불가능한 객체이다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+num=[n for n in range(2,36)]
+
+s={{x,y,z} for x in num for y in num for z in num
+      if x!=y and y!=z and x!=z and x*y*z==36}
+# TypeError: unhashable type 'set'
+
+s_tup={(x,y,z) for x in num for y in num for z in num
+      if x!=y and y!=z and x!=z and x*y*z==36}
+>>> {(3, 2, 6), (6, 2, 3), (2, 3, 6), (2, 6, 3), (6, 3, 2), (3, 6, 2)}
+
+s_fro={frozenset((x,y,z)) for x in num for y in num for z in num
+      if x!=y and y!=z and x!=z and x*y*z==36}
+>>> {frozenset({2, 3, 6})}
+    # 순서만 다른 숫자쌍들은 전부 중복으로 인식되어 하나만 남기고 삭제됨
+\end{minted}
+
+
+
+
+\section{Dictionaries}
+
+지금까지 시퀀스 타입 list, tuple, range, str, 세트 타입 set, frozenset등을 살펴보았다.\\
+사전은 또다른 자료형인 mapping type이다.\\
+숫자로 인덱싱되는 시퀀스형과 달리 사전은 'key'로 인덱싱된다. \\
+이떄 key로는 불변형 자료를 사용한다.
+\newpage
+사전 안에서 키는 중복될 수 없다. 만약 이미 사용중인 키로 어떤 값을 저장하면, 그 키와 함께 저장되었던 원래 값은 새로운 값으로 대체된다. \\존재하지 않는 키로 값을 추출하려고 하면 오류가 발생한다.\\
+사전에서 사용되고 있는 모든 키의 리스트를 돌려주는 함수:\\
+- list(dict) 삽입 순서대로  \\
+- sorted(dict) 정렬된 순서대로
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+bd = {'정희원': '0419', '장혜원': '0515', '최정원': '0306'}
+
+bd['최정원'] = '0307' # 해당 키의 원래 값이 새로운 값으로 대체됨
+# {'정희원': '0419', '장혜원': '0515', '최정원': '0307'}
+
+del bd['정희원'] # '정희원': '0419' 삭제
+bd['박하은'] = '1213'
+# {'장혜원': '0515', '최정원': '0307', '박하은': '1213'}
+
+list(bd) # 삽입 순서
+# ['장혜원', '최정원', '박하은']
+sorted(bd) # 정렬
+# ['박하은', '장혜원', '최정원']
+
+'정희원' not in bd
+# True
+bd['정선경'] # 존재하지 않는 키의 값 추출
+>>> KeyError: '정선경'
+\end{minted}
+\newpage
+key-value쌍들이 시퀀스로 묶여 있을때 dict()생성자를 이용하여 바로 사전으로 만들 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+s={('apple', 'toamto'), ('pear', 'carrot')}
+
+l=[((1,2), ('A','B')),    # 키-값 쌍1
+   ('hello', [456,789])]  # 키-값 쌍2
+   # 가변 객체인 리스트는 값 자리에만 올 수 있음
+
+dict()
+>>> {} #빈 사전
+
+dict(s) # 시퀀스형이 아닌 set형 자료에도 dict를 적용할 수 있음
+>>> {'pear': 'carrot', 'apple': 'toamto'}
+
+dict(l)
+>>> {(1, 2): ('A', 'B'), 'hello': [456, 789]}
+\end{minted}
+컴프리헨션을 이용해서 임의의 키와 값 표현식을 가지는 사전을 만들 수도 있다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+num=[4,5,6]
+str='ABC'
+
+{(x,x+1): y for x in num for y in str}
+>>> {(4, 5): 'C', (5, 6): 'C', (6, 7): 'C'}
+# (4, 5): 'A', (4, 5): 'B' 등등 같은 키 값을 가지는 쌍들은 모두 덮어씌워져서
+# 값 자리에는 'C'만 남게 됨
+
+{(num[i],num[i]+1):str[i] for i in range(3)}
+>>> {(4, 5): 'A', (5, 6): 'B', (6, 7): 'C'}
+\end{minted}
+특히 키가 간단한 문자열일 때는, 키워드 인자((매개변수)=(값))들을 사용하면 키-값 쌍을 지정하기 더 쉽다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+dict(Alice= 'pliot', Bob= 'astronaut')
+>>> {'Alice': 'pliot', 'Bob': 'astronaut'}
+
+# 따옴표로 둘러싸인 값 또는 숫자를 매개변수로 사용하면 오류 발생
+dict('Alice' = 'pliot', 300000='km/s')
+>>> SyntaxError: expression cannot contain assignment, perhaps you meant "=="?
+\end{minted}
+딕셔너리에서도 마찬가지로 여러 가지 함수를 사용할 수 있다
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[htb]
+\centering
+%\caption{A list of house plants and their details.}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Method} & \textbf{Argument} & \textbf{Operation}                            \\
+\hline\hline
+setdefault      & key, value     & 키와 값을 추가함                                   \\
+\hline
+update          & 키워드 인자     & 이미 사용중인 key의 값을 수정, 없다면 새로 추가       \\
+                & (key=value)    & * 변수명 형태의 키가 아닐 경우 {키:값}(사전형)으로 입력  \\
+\hline
+pop             & key 또는       & 키와 값을 꺼내고 값을 반환                          \\
+                & key, default   & 존재하지 않는 key일 경우 dafault를 반환함            \\
+\hline
+popitem         &                & 마지막 아이템 제거                                  \\
+\hline
+clear           &                & 모든 키-값 쌍 삭제                                    \\
+\hline
+\end{tabular}
+\end{table}
+\\예시:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+d={}
+
+d.setdefault('a') # 딕셔너리에 '키' 추가
+d.setdefault('b', 100) # 키, 값 추가
+d
+>>> {'a': None, 'b': 100}
+
+d.update(a=50)
+d.update({1:100}) # 숫자 key -> '딕셔너리'형태로 입력해야 함
+d.update(zip(['b'],[1000]))
+d
+>>> {'a': 50, 'b': 1000, 1: 100}
+
+d.pop('b')
+>>> 1000
+d.pop('c',0)
+>>> 0  # 존재하지 않는 키 이므로 기본값 반환
+
+d.popitem()  # 마지막 키-값 쌍 삭제
+>>> (1, 100)
+\end{minted}
+
+\section{Looping Techniques}
+사전에서 items()는 키-값 쌍을, keys(), values()는 키, 값 각각을 돌려준다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+fruits={'apple':'사과', 'grape':'포도'}
+
+for eng, kor in fruits.items():
+    print(f'{eng} - {kor}')
+>>> apple - 사과
+    grape - 포도
+
+key_value=list(zip(fruits.keys(), fruits.values()))
+>>> [('apple', '사과'), ('grape', '포도')]
+item=list(fruits.items())
+key_value == item
+>>> True
+\end{minted}
+\newpage
+enumerate()는 어떤 값과 그 값의 위치를 함께 반환해주는 함수이다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# e.g.1) 오류 메시지와 오류 발생 위치 함께 출력하기
+logs_example = [
+"INFO: User logged in",
+"ERROR: Not authorized user",
+"INFO: Data processed",
+"INFO: Data processed",
+"ERROR: File not found",
+]
+for line, log in enumerate(logs_example):
+    if "ERROR" in log:
+        print(f"Error found at line {line+1}: {log}")
+
+>>> Error found at line 2: ERROR: Not authorized user
+    Error found at line 5: ERROR: File not found
+#-------------------------------------------
+# e.g.2) 수열의 원소와 항 번호 함께 출력하기
+fib=[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597]
+
+for index, value in enumerate(fib, start=1): # 시작 인덱스 1로 설정
+    if index%5==0 or index==len(fib):
+    # 숫자 5개마다 줄넘김/리스트의 마지막 숫자 뒤에는 쉼표 생략
+        split='\n'
+    else:
+        split=', '
+    print(f'a{index} = {value}',end=split)
+
+>>> a1 = 0, a2 = 1, a3 = 1, a4 = 2, a5 = 3
+    a6 = 5, a7 = 8, a8 = 13, a9 = 21, a10 = 34
+    a11 = 55, a12 = 89, a13 = 144, a14 = 233, a15 = 377
+    a16 = 610, a17 = 987, a18 = 1597
+\end{minted}
+zip()함수를 사용하면 여러 개의 시퀀스들을 한 번에 병렬적으로 돌면서 처리할 수 있다.
+\vspace{-1cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+for number in '123':
+    for upper in 'ABC':
+        for lower in 'abc':
+           print(number, upper, lower)
+>>> 1 A a
+    1 A b
+    1 A c
+    1 B a
+    1 B b
+    ...
+    3 C a
+    3 C b
+    3 C c
+
+for number, upper, lower in zip('123', 'ABC', 'abc'):
+    print(number, upper, lower)
+>>> 1 A a
+    2 B b
+    3 C c
+#-------------------------------------------
+# 61p 딕셔너리 예제
+num=[4,5,6]
+str='ABC'
+
+{(x,x+1): y for x in num for y in str}
+>>> {(4, 5): 'C', (5, 6): 'C', (6, 7): 'C'}
+
+# zip함수 사용
+{(x,x+1): y for x, y in zip(num,str)}
+>>> {(4, 5): 'A', (5, 6): 'B', (6, 7): 'C'}
+\end{minted}
+reversed()는 시퀀스를 거꾸로 반복하는 함수이다.\\
+* 주의: reversed와 reverse의 차이점\\
+reversed(시퀀스)는 원래의 시퀀스에는 영향을 주지 않고 역순으로 순회할 수 있도록 반복자를 반환해준다. 반면 시퀀스.reverse()는 기존 시퀀스 안의 항목들을 재배치 시키기 때문에 순서가 보존되어야 하는 시퀀스일 경우 사용에 주의해야 한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 회문 검사 함수
+def palindrom(w):
+    w_reversed=''.join(reversed(w))
+    print(w,'-->',w_reversed,end=' | ')
+    if w == w_reversed:
+        print('회문입니다')
+    else:
+        print('회문이 아닙니다')
+
+palindrom('hello')
+palindrom('대학생학대')
+>>> hello --> olleh | 회문이 아닙니다
+    대학생학대 --> 대학생학대 | 회문입니다
+\end{minted}
+반대로 sorted() 함수가 반환해주는 반복자는 정렬된 순서로 항목에 접근한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+basket= ['apple', 'orange', 'apple', 'orange', 'banana']
+for f in sorted(basket):
+    print(f)
+>>> apple
+    apple
+    banana
+    orange
+    orange
+
+# 중복되는 항목 없이 정렬된 시퀀스를 얻기 위해 sorted()와 set()조합이 자주 사용됨
+
+unique_sorted_basket=[fruit for fruit in sorted(set(basket))]
+>>> ['apple', 'banana', 'orange']
+\end{minted}
+
+\section{More on Conditions}
+
+\textbf{comparison operators}\\
+in, not in은 값이 컨테이너 안에 있는지 검사하고,\\
+is, is not은 두 객체가 완전히 같은지 검사한다.\\
+비교연산자들끼리 우선순위는 모두 동등하고, 산술 연산자들보다는 항상 낮다.
+
+\textbf{and, or, not}\\
+우선순위: not > and > or \\
+\(\rightarrow\) e.g.) A and not B or C는 (A and (not B)) or C와 같다. \\
+and와 or는 \uline{단락 회로 연산자}로도 불린다.\\
+왼쪽에서 오른쪽 순서로 값이 구해지다가 결과가 결정되자마자 중단된다.\\
+예를 들어, 표현식 A 참, B 거짓, C 참이라면
+\uline{A and B and C}는 B에서 값 구하기를 멈추고 표현식 C의 값은 구하지 않는다.
+
+논리값이 아닌 일반적인 값일 경우, 항상 마지막으로 구해진 값이 반환된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+''' and 연산자 '''
+a = 1 and 2
+print(a) >>> 2  # 1은 참, 다음 값도 확인 -> 마지막으로 확인한 값은 2
+a = 6 and 0 and 3
+print(a) >>> 0  # 0은 거짓으로 간주됨, 더 이상 확인하지 않고 0을 반환
+
+''' or 연산자 '''
+a = 0 or 7
+print(a) >>> 7  # 0은 거짓이므로 다음 값 확인: 7
+a = 9 or 7
+print(a) >>> 9  # 9가 참이므로 더 이상 확인하지 않고 9 반환
+\end{minted}
+
+비교 또는 다른 논리 표현식의 결과를 변수에 대입하는 것도 가능함
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+obj1, obj2, obj3 = '', 'python', 'hello'
+non_null = obj1 or obj2 or obj3
+non_null >>> 'python' # 빈 문자열: 거짓
+''' None, False,  0, 0.0, 0j (복소수) 또는 빈 시퀀스, 컨테이너('', [], {}, set(), range(0)) 등의 값들은 모두 거짓으로 간주함'''
+\end{minted}
+\textbf{walrus operator :=}
+\\(변수) := (표현식) 형태로 사용함. 표현식의 결과를 변수에 할당하고, 동시에 반환한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 입력받은 단어의 길이가 5 이상이면 단어와 단어의 길이 출력
+str=input('단어 입력: ')
+length=len(str)
+if length >= 5:
+    print(f'문자열: {str}, 길이: {length}')
+else:
+    print('너무 짧음')
+#---------------------------------
+# := 연산자 사용
+if (length:=len(str:=input('단어 입력: ')))>=5:
+    print(f'문자열: {str}, 길이: {length}')
+else:
+    print('너무 짧음')
+\end{minted}
+\section{Comparing Sequences and Other Types}
+
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+[1, 2, 3]              < [1, 2, 4]
+(1, 2, 3, 4)           < (1, 2, 4)
+# 첫 번째 요소부터 순차적으로 비교
+
+'999999999999'<'ABC' < 'C' < 'PYTHON' < 'Python'
+# 대문자<소문자, '숫자'<'문자'
+
+(1, 2)                 < (1, 2, -1)
+# 하나가 다른 시퀀스의 첫부분 일부라면 둘중 짧은 시퀀스가 더 작음
+
+(1, 2, 3)             == (1.0, 2.0, 3.0)
+# 다른 타입이지만 비교 가능
+
+(1, 2, ('aa', 'ab'))   < (1, 2, ('abc', 'a'), 4)
+# ('aa', 'ab') < ('abc', 'a')
+\end{minted}

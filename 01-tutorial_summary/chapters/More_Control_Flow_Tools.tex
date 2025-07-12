@@ -1,0 +1,1766 @@
+%4.1
+\section{if Statements}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+x = float(input("Please enter a number: "))
+
+if x < 0 :
+    print(-x)
+elif x >= 0:
+    print(x)
+else:
+    print('try again')
+\end{minted}
+
+If statement can be followed by zero or more elif parts, and else part is optional
+We use elif short for ‘else if’ in order to avoid excessive indentation
+
+* when we’re comparing the same value to several constants, or checking for specific types or attributes, match statement would useful (see 2.7.)
+
+\newpage
+
+%=================================================================================
+
+%4.2
+\section{for Statements}
+Python’s for statement iterates over the items of any sequence:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+name = ['eunsoo','sunkyung','sohyun','hyewon']
+name.sort()
+for x in name:
+    print(x.capitalize())
+
+>>> Eunsoo
+    Hyewon
+    Sohyun
+    Sunkyung
+\end{minted}
+
+modifying a collection while iterating over the same collection would make it \\harder to understand the code.\\
+it’s usually better to loop over a copy of the collection, or to create a new one:
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+exam_scores = {'Hans': 70, 'Éléonore': 80, '景太郎': 90}
+dict_copy=exam_scores.copy() # 깊은은 복사 (독립적X)
+for student, score in dict_copy.items():
+    if score < 80 :
+        del dict_copy[student] # dict_copy가 변하면 exam_scores도 변함
+
+high_score = {}
+for student, score in exam_scores.items():
+    if score >= 80 :
+        high_score[student] = score  # 얕은 복사
+\end{minted}
+
+\newpage
+
+%=================================================================================
+
+%4.3
+\section{The range() Function}
+range() is useful when we need to iterate over a sequence of numbers.
+It is possible to specify a different increment(sometimes this is called the ‘step’).
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+list(range(2, 11, 3))
+>>> [2, 5, 8]
+# given end point is never part of the generated sequence
+
+list(range(-10, -100, -30))
+>>> [-10, -40, -70] #negative increment
+\end{minted}
+
+Or, to iterate over a sequence by its indices, we can combine range() and len():
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+a = ['A', 'B', 'C', 'D']
+for i in range(len(a)):
+    print(i, a[i])
+>>> 0 A
+    1 B
+    2 C
+    3 D
+\end{minted}
+* However, it is convenient to use the enumerate() function (see 3.6.)\\
+\newline
+Object returned by range() behave as if it is a list, but it isn’t.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+print(range(10))
+>>> range(0, 10)
+\end{minted}
+%(+eg: print a range)
+\\Instead, it returns the successive items of the desired sequence when we iterate over it, thus saving space.
+We say that such object is ‘iterable’.
+
+\begin{tcolorbox}[colback=black!15!white,colframe=black!15!white]
+\textbf{iterable} \newline
+Object suitable as a target which can provide successive items for functions or constructs, until its supply is exhausted
+\end{tcolorbox}
+
+And now we can tell that the for statement is one of such \textbf{constructs}:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+numbers = [1, 2, 3, 4, 5]
+square = [n * n for n in numbers] # 리스트 내포
+print(square)
+>>> [1, 4, 9, 16, 25]
+\end{minted}
+
+%for문 이외에 iterable을 사용하는 constructs의 예시 / +while문에서는?
+While an example of \textbf{functions} that take an iterable is :
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# sum 함수
+sum(range(4))  # 0 + 1 + 2 + 3
+>>> 6
+
+# map 함수
+numbers = list(range(4))
+tripled = map(lambda x: x * 3, numbers)
+print(tripled)
+>>> [0, 3, 6, 9]
+\end{minted}
+
+%=================================================================================
+\newpage
+%4.4
+\section{break and continue Statements}
+
+The break statement breakes out of the ‘innermost’ enclosing for or while loop
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+#직각삼각형의 세 변의 길이 조합 구하기 (중복X)
+for a in range(2, 10):
+    for b in range(2,a):
+        if a % b == 0:
+            print(f'{a} equals {b} * {a//b}')
+            break
+>>> 4 equals 2 * 2
+    6 equals 2 * 3
+    8 equals 2 * 4
+    9 equals 3 * 3
+\end{minted}
+
+The continue statement continues with the next iteration of the loop (+eg)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 10의 약수 찾기
+num=1
+while num < 9:
+    num+=1
+    if 10 % num != 0:
+        continue
+    print(f"found a divisor of 10: {num}")
+
+>>> found a divisor of 10: 2
+    found a divisor of 10: 5
+\end{minted}
+
+%=================================================================================
+\newpage
+%4.5
+\section{else Clauses on Loops}
+
+If the loop finishes without executing ‘break’, the else clause executes
+
+\textbf{- for loop} :  iteration을 모두 끝낸 후 (i.e. no break occurred)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+for n in range(2, 10):
+    for x in range(2, n):
+        if n % x == 0:
+            print(n, 'equals', x, '*', n//x)
+            break
+    else:
+        # loop fell through without finding a factor
+        print(n, 'is a prime number')
+>>> 2 is a prime number
+    3 is a prime number
+    4 equals 2 * 2
+    5 is a prime number
+    6 equals 2 * 3
+    7 is a prime number
+    8 equals 2 * 4
+    9 equals 3 * 3
+\end{minted}
+\begin{tcolorbox}[colback=white,colframe=black!40!white,title=Example]
+2 is a prime number\\
+...\\
+6 equals 2 * 3\\
+7 is a prime number\\
+\textbf{ 8 equals 2 * 2 * 2 }       => 이렇게 출력하려면?\\
+9 equals 3 * 3
+\end{tcolorbox}
+
+
+\textbf{- while loop} : 반복문의 조건이 거짓이 되었을 때   \begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+count = 0
+user_pw='202401011'
+while count < 3: # 최대 시도 횟수 3번
+    pw=input('비밀번호를 입력하세요: ')
+    if pw == correct_pw:
+        print('방문을 환영합니다')
+        break
+    print('비밀번호를 다시 입력하세요')
+    count+=1
+else:
+    print('잠시 후 다시 시도하세요')
+\end{minted}
+\begin{tcolorbox}[colback=white,colframe=black!40!white,title=Example: 아이디와 비밀번호를 모두 확인하려면?]
+\begin{minted}
+[
+baselinestretch=1.1,
+bgcolor=white,
+fontsize=\small,
+]
+{python}
+while count < 5: # 최대 시도 횟수 5번
+    id = input("아이디를 입력하세요: ")
+    if id == user_id:
+        while count < 5:
+            pw = input("비밀번호를 입력하세요: ")
+            if pw == user_pw:
+                print("방문을 환영합니다")
+                break
+            else:
+                count += 1
+                if count == 5:
+                    print('잠시 후 다시 시도하세요')
+                else:
+                    print('비밀번호를 다시 입력하세요. (%s/5)' % count)
+        break
+    else:
+        count += 1
+        if count == 5:
+            print('잠시 후 다시 시도하세요')
+        else:
+            print('아이디를 다시 입력하세요. (%s/5)' % count)
+\end{minted}
+\end{tcolorbox}
+
++) break뿐 아니라 return, raised exception 또한 루프를 일찍 종료시킬 수 있음. \\이 경우에도 else clause는 실행되지 않음
+\begin{table}[h]
+\begin{tabular}{@{}|c|c|c|@{}}
+\toprule
+break         & return                                                        & raised exception                                                                      \\ \midrule
+가장 가까운 반복문 종료 & \begin{tabular}[c]{@{}c@{}}반복문이 속해있는 \\ 함수 전체 종료\end{tabular} & \begin{tabular}[c]{@{}c@{}}어떤 예외를 발생시켜 에러 \\ 메시지와 함께 반복문을 \\ 중단시킴\end{tabular} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+% return? raised exception? 내용 추가해서더 긴 문장으로. (+eg)
+% eg) 지금까지는 if 문과 for, while 문에서의 사용을 알아봄. => 예외처리에서의 else?
+
+%=================================================================================
+%4.6
+\section{pass Statements}
+
+Pass statement does nothing.
+It can be used for a statement which is \uline{required in terms of syntax}, although the program \uline {requires no action} \begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+while True:
+    pass
+    if condition:
+        break  # 특정 조건에 따라 반복문 빠져나오기
+\end{minted}
+This is commonly used for creating minimal classes:
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Empty: # minimal class: 메서드와 속성이 구현되지 않은 최소한의 클래스
+    pass
+\end{minted}
+pass 자리에는 \\
+def  \verb|__init__| (self, a, b, ...) : \\
+\quad self.a = a\\
+\quad self.b = b\quad ... 와 같은 코드를 채울 수 있음
+
+it's also useful as a \textbf{place-holder} for a function or conditional body.
+when working on new code, pass statement allow us to keep thinking at a more abstract level.
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 함수
+def func(*args):
+    pass
+
+# if-else
+if condition:
+    print(something)
+else:
+    pass
+
+# for loop
+for n in nums:
+    pass    # 각각의 요소에 대한 작업은 나중에 추가
+
+# 예외 처리
+try:
+    risky_operation()
+except SomeError:
+    pass
+# 오류가 나도 일단 무시(또는 오류 처리할 코드는 나중에 추가)
+\end{minted}
+
+\newpage
+%4.7
+\section{match Statements}
+
+조건문과 튜플 언패킹을 더 편리하게 만들어주는 구문
+
+Match statement takes an expression (문자열, 함수 호출, ... ), and compares its resulting value
+to patterns given as case blocks
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def http_error(status):
+    match status:
+        case 400:
+            return "Bad request"
+        case 401 | 402 | 403: # 401 or 402 or 403
+            print("Permission Denied")
+        case 404:
+            return "Not found"
+        case 418:
+            return "I'm a teapot"
+        case _:
+            return "Something's wrong with the internet"
+\end{minted}
+- Variable name '{\_}' : \textit{wildcard}\\have no particular value but can represent anything, therefore never fails to match.\\
+- We can combine several literals in a single pattern using  "|" (“or”)
+
+\newpage
+- Patterns can unpack assignments {\&} bind variables
+\vspace{-0.5cm}
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+aboveskip=0mm,
+belowskip=1mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def print_point(point):  # point is an (x, y) tuple
+    match point:
+        case (0, 0):
+            print("Origin")
+        case (0, y):
+            print(f"Y = {y}")
+        case (x, 0):
+            print(f"X = {x}")
+        case (x, y):
+            print(f"X = {x}, Y = {y}")
+        case _:
+            raise ValueError("Not a point")
+
+print_point((0, 0)) # Origin
+print_point((4, 0)) # X = 4
+print_point([0, 2]) # Y = 2
+# unpacking이 가능하다면 어떤 꼴이든 상관 X
+print_point([2] + [4]) # X = 2, Y = 4
+print_point([x for x in range(2)]) # Y = 1
+print_point(("1", "2")) # X = 1, Y = 2
+print_point([1+2, 300+20]) # X = 3, Y = 320
+print_point("some thing".split()) # X = some, Y = thing
+
+# unpacking이 불가능하거나 어떤 case에도 걸리지 않으면 ValueError 발생
+print_point([1])
+print_point([1, 0, 3])
+print_point(2, 1) # 하나의 인자만 들어가야함!!
+\end{minted}
+case (0, y),  case (x, 0) $\rightarrow$ variable binds a value from the subject (point)\\
+case (x, y) $\rightarrow$ unpacking assignment (x, y) = point
+
+%------------------------------------------------------------------------------------
+
+\Large{+) match statement with class} \\
+\normalsize{}
+\newline
+1. Type matching\\
+We can use match to check the type of an object \\
+and execute different code blocks based on the class it belongs to.
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+class Square:
+    def __init__(self, side):
+        self.side = side
+
+def get_area(shape):
+    match shape:
+        case Circle(radius):
+            return 3.14 * radius * radius
+        case Square(side):
+            return side * side
+        case _:
+            return "Unknown shape"
+\end{minted}
+\newpage
+2. Attribute Extraction\\
+When using classes to structure data, we can use the \textit{class name}\\ (e.g. match(\textit{class name}): ) followed by \textit{argument list} ($\approx$ constructor,\quad i.e. \verb|__init__|), but with the ability to capture attributes into variables.
+\begin{tcolorbox}[colback=black!15!white,colframe=black!15!white]
+\small class를 사용하지 않으면 point(x= val1 , y= val2)와 같은 객체 패턴을 사용할 수 없음. \\(x= 과 y= 은 매칭을 위한 key=pattern 구문, 여기에서 key가 클래스 속성 이름임)
+\end{tcolorbox}
+
+%(+eg, 클래스만 사용할때와 비교)
+\begin{minted}
+[
+frame=lines,
+framesep=5mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def where_is(point):
+    match point:
+        case Point(x=0, y=0):
+            print("Origin")
+        case Point(x=0, y=y):
+            print(f"Y={y}")
+        case Point(x=x, y=0):
+            print(f"X={x}")
+        case Point():
+            print("Somewhere else")
+        case _:
+            print("Not a point")
+\end{minted}
+
+% (dataclasses? or \verb|__match_args__|? ->(설명필요))
+\newpage
+3. 패턴에서 변수의 특정 위치를 설정 가능
+ \\: Builtin class(dataclass-\verb|__match_args__|)를 이용\begin{tcolorbox}[colback=black!15!white,colframe=black!15!white]
+{\large\verb|__match_args__| :}\newline
+Tuple that \uline{specifies the order of fields}{\small(=클래스 속성)} used when matching against a dataclass instance{\small(=데이터클래스로 만들어진 객체)} in a match statement. If not explicitly defined, it defaults to a tuple of the dataclass's field names \uline{in the order they appear in the class definition}.
+\end{tcolorbox}
+
+e.g.1) if  \verb|__match_args__| is set to (‘x’ , ‘y’):
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# following patterns are all equivalent
+Point(1, var)
+Point(1, y=var)
+Point(x=1, y=var)
+Point(y=var, x=1)
+\end{minted}
+=> point(x=1, y=var) : pattern \textbf{point} bind the \textbf{y attribute} to the \textbf{var variable}
+\newline
+
+Only the standalone names (like var above) are assigned to by a match statement.
+* dotted names (like foo.bar), attribute names (the\textbf{ x=} and \textbf{y=} above) or class names (recognized by the “(…)” next to them like \textbf{Point} above) are never assigned to.
+\newpage
+- Patterns can be arbitrarily nested.
+Eg) if we have a short list of Points, with \verb|__match_args__| added, we could match it like this:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Point:
+    __match_args__ = ('x', 'y')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+match points:
+    case []:
+        print("No points")
+    case [Point(0, 0)]:
+        print("The origin")
+    case [Point(x, y)]:
+        print(f"Single point {x}, {y}")
+    case [Point(0, y1), Point(0, y2)]:
+        print(f"Two on the Y axis at {y1}, {y2}")
+    case _:
+        print("Something else")
+\end{minted}
+% Q ) 하나의 case가 list(또는 tuple)이라면 나머지 패턴들도 형식을 맞춰줘야하는지 (아마그럴둤)
+
+- We can add an if clause, known as a “guard”. Note that value capture happens before the guard is evaluated:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+match point:
+    case Point(x, y) if x == y:  # If the guard is false,
+        print(f"Y=X at {x}")
+    case Point(x, y):  # match goes on to try the next case block
+        print(f"Not on the diagonal")
+\end{minted}
+
+<Several other key features>\\
+\newline
+- \uline{Tuple and list patterns}\\
+: Like unpacking assignments, tuple and list patterns have exactly the same meaning and actually match arbitrary sequences %(예를들어?).
+An important exception is that they(= tuple {$&$} list ?) don’t match iterators or strings.\\
+\newline
+- \uline{Sequence patterns support extended unpacking}\\
+: [ x, y, *rest ] and ( x, y, *rest ) work similar to unpacking assignments. \\
+The name after * may also be {\_}, so (x, y, *{\_}) matches a sequence of at least two items without binding the remaining items. (+eg: not only two items but also binding the ramainings)\\
+\newline
+- \uline{Mapping patterns}\\
+: \{"bandwidth": b, "latency": l\} captures the "bandwidth" and "latency" values from a dictionary. Unlike sequence patterns, extra keys are ignored. \\
+An unpacking like **rest is also supported. \\
+(But **{\_} would be redundant(중복), so it is not allowed.)\\
+%(+eg)
+\newline
+- \uline{Subpatterns may be captured using the as keyword}:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+case (Point(x1, y1), Point(x2, y2) as p2): ...
+\end{minted}
+case (Point(x1, y1), Point(x2, y2) as p2)  capture the second element of input as p2.\\
+%+(eg: How does it actually work?)
+
+- Most literals are compared by equality, however the singletons True, False and None are compared by identity.뭐라는거야\\
+\newline
+-\uline{Patterns may use 'constants'}  \\
+These must be dotted names to prevent them from being interpreted as capture variable:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from enum import Enum
+class Color(Enum):
+    RED = 'red'
+    GREEN = 'green'
+    BLUE = 'blue'
+
+color = Color(input("Enter your choice of 'red', 'blue' or 'green': "))
+
+match color:
+    case Color.RED:
+        print("I see red!")
+    case Color.GREEN:
+        print("Grass is green")
+    case Color.BLUE:
+        print("I'm feeling the blues :(")
+\end{minted}
+\newpage
+* enum?
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+from enum import Enum, auto
+
+class MyEnum(Enum):
+    A = auto()
+    B = auto()
+    C = auto()
+print(MyEnum.A.value) # 1
+print(MyEnum.B.value) # 2
+print(MyEnum.C.value) # 3
+# auto(): 자동으로 1, 2, 3을 할당해줌
+# Enum은 기본적으로 정수 값을 가지기 떄문에 1부터 시작해서 1씩 증가하는 값이 들어감
+
+class Color(Enum):
+    RED = 10
+    GREEN = auto()
+    BLUE = auto()
+print(Color.RED.value) # 10
+print(Color.GREEN.value) # 11
+print(Color.BLUE.value) # 12
+# RED=10 으로 설정했기 때문에 auto()는 그 다음 숫자인 11, 12를 자동으로 넣어줌
+
+class MyEnum(StrEnum):
+    A = "Apple"
+    B = "Banana"
+print(MyEnum.A.value) # "Apple"
+print(MyEnum.B.value) # "Banana"
+''' StrEnum에서, 이렇게 직접 지정하는 대신 auto()를 사용하면
+멤버 이름을 그대로 문자열 값으로 설정함. (e.g. A = "A", B = "B", ...) '''
+\end{minted}
+
+\newpage
+
+\subsubsection{class 복습}
+ \\
+클래스: 객체(instance)를 만들어내기 위한 '틀'\\
+만들어낸 객체들이 갖는 기능은 모두 동일하다. 단, 각각의 객체들은 모두 고유한 성격을 가진다
+\begin{tcolorbox}[colback=white,colframe=black!40!white,title=클래스의 구조]
+\begin{minted}
+[
+baselinestretch=1.1,
+bgcolor=white,
+fontsize=\small,
+]
+{python}
+class 클래스이름:
+    def __init__(self, 매개변수1, 매개변수2, ...):
+        self.속성1 = 매개변수1
+        self.속성2 = 매개변수2
+        ...
+#---------------------------------
+    def 함수1(self):
+        @@@
+        return &&&
+    def 함수2(self):
+        @@@
+        print('결과 : %s' %(self.속성1 * self.속성3))
+    ...
+#---------------------------------
+객체1 = 클래스이름(arg1, arg2, ...)
+객체2 = 클래스이름()
+객체3 = 클래스이름(arg'1, arg"2, ...)
+...
+#---------------------------------
+객체1.함수4()
+print(객체2.함수1())
+...
+
+\end{minted}
+\end{tcolorbox}
+\newpage
+\verb|__init__| ('생성자'):  클래스를 통해서 객체를 생성하는 순간에 호출되는 특별한 메서드. \\
+\newline
+init = initialize (초기화) ->  객체 생성 시 특정 값으로 초기화시키는 함수이다.\\
+\verb|__init__| 메서드도 함수이기 때문에 여러 매개변수를 지정할 수 있으며, \\
+이 매개변수들로 넘겨진 인자를 초기화에 사용한다.
+e.g.)
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Person:
+    def __init__(self, name, gender, age):   
+        self.name = name
+        self.gender = gender
+        self.age = age
+
+    def introduce(self):
+        print('이름 : %s' %self.name)
+        print('성별 : %s' %self.gender)
+        print('나이 : %d' %self.age)
+
+a = Person('John', 'male', 21)
+a.introduce()
+
+>>> 이름 : John
+    성별 : male
+    나이 : 21
+\end{minted}
+\verb|__init__|함수의 매개변수는 총 4개이지만, 3개의 인자만 입력함.\\
+\(\because\)  self 매개변수에는 메서드를 호출한 객체 a가 자동으로 전달되기 때문. \\항상 첫 번째 매개변수인 self에는 자기 자신이 들어간다. 
+\newpage
+1) 가변 인수, 키워드 인수 사용하기
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Person_1:
+    def __init__(self, *args):     # 가변 인수
+        self.name = args[0]
+        self.gender = args[1]
+        self.age = args[2]
+    def introduce(self):
+        print('이름 : %s' %self.name)
+        print('성별 : %s' %self.gender)
+        print('나이 : %d' %self.age)
+a = Person_1(*['John', 'male', 21])
+a.introduce()
+>>> 이름 : John
+    성별 : male
+    나이 : 21
+#-------------------------------------------
+class Person_2:
+    def __init__(self, **kwargs):    # 키워드 인수
+        self.color = kwargs['color']
+        self.food = kwargs['food']
+        self.weather = kwargs['weather']
+    def Preference(self):
+        print('색 : %s' %self.color)
+        print('음식 : %s' %self.food)
+        print('계절 : %s' %self.weather)
+b = Person(**{'color': '검정', 'food': '치킨', 'weather': '여름'})
+# == Person(color='검정', food='치킨', weather='여름')
+b.Preference()
+>>> 색 : 검정
+    음식 : 치킨
+    계절 : 여름
+\end{minted}
+
+2) 특정 인스턴스에만 속성 추가
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Person:
+    def __init__(self, *args):
+        self.name = args[0]
+        self.gender = args[1]
+        self.age = args[2]
+    def introduce(self):
+        print('이름 : %s' %self.name)
+        print('성별 : %s' %self.gender)
+        print('나이 : %d' %self.age)
+
+A = Person('Alice', 'female', 21)
+B = Person('Bob', 'male', 21)
+
+A.job = 'astronaut'
+print(A.job) # astronaut
+print(B.job) # AttributeError: 'Person' object has no attribute 'job'
+
+Person.job = 'teacher'  # Person 클래스로 생성된 모든 인스턴스에 job속성이 추가됨
+print(A.job) # astronaut (주의: teacher로 바뀌지 않음)
+print(B.job) # teacher
+\end{minted}
+
+3) 비공개 속성, 비공개 메서드
+
+지금까지 만든 속성이나 메서드는 모두 클래스 밖에서 접근할 수 있었다. \\
+하지만 특정 인스턴스만 값이 다른 경우가 존재하면 안 되는 경우가 있을 수 있다.\\
+이러한 경우에 \uline{클래스 밖에서는 접근할 수 없도록(변경할 수 없도록) 하는 기능이 \\비공개 속성(private attribute)}이다. 
+
+비공개 속성은 속성 이름 앞에 밑줄 두 개(\_\_)가 붙어야 한다. 
+
+- 비공개 속성
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Person:
+    def __init__(self, name, gender, age, height):
+        self.name = name
+        self.gender = gender
+        self.age = age
+        self.__height = height
+
+A = Person('Alice', 'female', 21, 160)
+A.age += 1
+print(A.age)  # 22
+A.__height += 5  # AttributeError: 'Person' object has no attribute '__height'
+\end{minted}
+- 비공개 메서드
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Person:
+    def __init__(self, name, gender, age, height):
+        self.name = name
+        self.gender = gender
+        self.age = age
+        self.__height = height
+    def __hi(self):
+        print("Say hi!")
+    def hello(self):
+        self.__hi()
+
+A = Person('Alice', 'female', 21, 160)
+A.hello()  # Say hi!
+A.__hi()  # AttributeError: 'Person' object has no attribute '__hi'
+\end{minted}
+
+\newpage
+- \uline{클래스를 사용하는 이유?}\\
+\(\rightarrow\) 똑같은 프로그램을 함수와 클래스로 각각 작성해보자\\
+2명의 학생이 있고, 각자 0부터 임의의 수를 덧셈을 해나간 결과가 필요할 때:
+
+\newline
+1) 함수
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+student1 = 0
+student2 = 0
+
+def plus1(num):
+    global student1
+    student1 += num
+    return student1
+
+def plus2(num):
+    global student2
+    student2 += num
+    return student2
+
+print(plus1(3)) # 3
+print(plus2(4)) # 4
+print(plus1(5)) # 8
+print(plus2(5)) # 9
+\end{minted}
+\newpage
+2) 클래스
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+class Oper:
+    def __init__(self):
+        self.result = 0
+
+    def plus(self, num):
+        self.result += num
+        return self.result
+
+student1 = Oper()
+student2 = Oper()
+
+print(student1.plus(3)) # 3
+print(student2.plus(4)) # 4
+print(student1.plus(5)) # 8
+print(student2.plus(5)) # 9
+\end{minted}
+코드 길이 상 차이가 없는 것처럼 보일 수 있지만, 만약 학생이 10명이 된다면\\
+함수 10개를 정의하는 대신에 객체만 10개 만들어주면 됨:\\
+student1 = Oper()\\
+student2 = Oper()\\
+student3 = Oper()\\
+...\\
+student10 = Oper()\\
+
+또한 새로운 연산 기능을 추가하는 것도 훨씬 간단함. Oper 안에 새로운 함수를 한 번만 만들어주면 됨\\
+
+%=========================
+
+%4.8
+\section{Defining Functions}
+
+%\includegraphics[width=5cm]{fib.png}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def fib(n):    # n이하의 피보나치 수열 출력하는 함수
+    """Print a Fibonacci series less than n."""  # document string
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b   # [a, b, a+b] = [a, b]->[b, a+b]
+    print()
+
+fib(2000)
+>>> 0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597
+\end{minted}
+
+{\large\textbf{<지역변수, 전역변수>}}\\
+함수를 실행하면 함수의 지역 변수들을 위한 새로운 symbol table이 만들어짐 \\
+
+\uline{variable assignments(변수 대입)}\\
+: local symbol table에 값을 저장함\\
+\uline{ variable references(변수 참조)}\\
+: look in the local symbol table -> local symbol tables of enclosing functions \\-> the global symbol table -> the table of built-in names \\
+\newline
+\(\therefore\)\  \quad global variables \(\&\)\  variables of enclosing functions cannot be directly \\assigned a value within a function , although they may be referenced.\\
+(단, 전역변수를 global statement로 명시하거나, enclosing functions의 변수들을 nonlocal statement으로 명시했을 경우에는 함수 안에서 직접 값이 대입될 수 있음.)
+
+함수 호출시 전달되는 실제 매개변수(인자)들은 그 함수의 지역 심볼 테이블에 만들어짐. \\
+-> 인자들은 값에 의한 호출(call by value)로 전달된다.\\ 여기에서 값은 객체의 값(X), 객체를 가리키는 주소(O)\\ 즉, 전달되는 인수는 데이터 자체가 아닌 복사본임. \\불변 객체(int, float, str, tuple, ...): 함수 종료 후에도 원본 객체에는 변화가 없음. \\가변 객체(list, dict, set, ...): 함수 종료 후에 바깥(전역 공간)에 변화가 남아있게 됨.\\
+
+When a function calls another function, or calls itself recursively(재귀적으로), \\a new local symbol table is created for that call.
+
+A \textbf{function definition} associates the \uline{function name} with the \uline{function object} in the current symbol table.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+fib
+>>> <function fib at 10042ed0>
+# 인터프리터는 해당 이름이 가리키는 객체를 사용자 정의 함수로 인식함.
+
+f = fib  # Other names can also point to that same function object,
+f(100) # and can also be used to access the function
+>>> 0 1 1 2 3 5 8 13 21 34 55 89
+\end{minted}
+\newpage
+피보나치 수열의 리스트를 돌려주는 함수:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def fib2(n):  # return Fibonacci series up to n
+    """Return a list containing the Fibonacci series up to n."""
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)
+        a, b = b, a+b
+    return result
+
+f100 = fib2(100)    # call it
+f100  # 변수명: f100 / type: list
+      # vlaue: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+\end{minted}
+result.append(a) calls a method of the list object result.\\ A method is a function that ‘belongs’ to an object and is named \uline{object.methodname} \\
+Different types define different methods.
+(Methods of different types may have the same name without causing ambiguity.) \\
+For example, the method append() is defined for list objects; it adds a new element at the end of the list.
+\newpage
+
+%4.9
+\section{More on Defining Functions}
+
+We can define functions with a variable number of arguments
+There are three forms: Default Argument Values, Keyword Arguments, and Special parameters, and they can be combined
+
+\subsubsection{Default Argument Values}
+값을 가지는 매개변수
+-> 함수 호출시 인수가 전달되면 전달된 인수의 값이 적용되고, 전달되지 않았다면 디폴트값이 적용된다
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def add_up_to_n(n=5):
+    i=1
+    sum=0
+
+    for i in range(n+1):
+        sum+=i
+    print(f'입력한 숫자까지의 합은: {sum}')
+
+add_up_to_n() # 전달된 인자 X, n=5(디폴트 값)
+add_up_to_n(10)
+>>> 15
+    55
+\end{minted}
+\newpage
+We can specify a default value for one or more arguments. \\
+-> 정의된 것보다 더 적은 개수의 argument(인자)들로 호출될 수 있는 함수를 만듦 :
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def ask_ok(prompt, retries=4, reminder='Please try again!'):
+    while True:
+        reply = input(prompt)
+    #in keyword: tests whether a sequence contains a certain value.
+        if reply in {'y', 'ye', 'yes'}:
+            return True
+        if reply in {'n', 'no', 'nop', 'nope'}:
+            return False
+        retries = retries - 1
+        if retries < 0:
+            raise ValueError('invalid user response')
+# reply에 yes 또는 no 시퀀스에 포함되지 않는 데이터(a,b,@,5,...)가
+# 4번 이상 입력되면 ValueError 발생
+        print(reminder)
+\end{minted}
+This function can be called in several ways:
+
+- 꼭 필요한 인자만 전달(예시에서는 prompt): ask\_ok('정말 끝내길 원하세요?')
+
+- 선택적으로 인자 하나를 제공: ask\_ok('파일을 덮어써도 좋습니까?', 2)
+
+- 모든 인자 제공: ask\_ok('파일을 덮어써도 좋습니까?', 2, '예나 아니요로만 답하세요!')\\
+\newline
+\textbf{주의사항\\}
+1) 매개변수와 디폴트 매개변수 혼용:\\
+함수의 매개변수가 여러개일 경우, 인수는 왼쪽부터 차례대로 넘겨준다. 따라서 디폴트 매개변수를 뒤쪽으로 몰아서 지정해줘야 함
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def deparameter(a, b='b', c='c',d='d'):
+    print(f'{a} {b} {c} {d} 출력 완료')
+
+deparameter(1)
+deparameter(1,2,3)
+>>> 1 b c d 출력 완료
+    1 2 3 d 출력 완료
+\end{minted}
+만약 디폴트 매개변수가 왼쪽에 선언되었을 경우:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def deparameter(a=0, b, c, d):
+    print(f'{a} {b} {c} {d} 출력 완료')
+
+deparameter(1,2,3)
+>>> SyntaxError: non-default argument follows default argument
+\end{minted}
+
+2) 디폴트 값은 함수 정의 시점에 정의되고있는 범위에서만 결정됨:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+i = 5
+def f(arg=i):
+    print(arg)
+
+i = 6
+f()
+>>> 5  # f가 정의되는 시점에 기본값은 arg=5로 결정되었음
+\end{minted}
+\newpage
+3) (중요) 디폴트 값은 오직 한 번만 값이 구해짐\\
+ This makes a difference when the default is a mutable object such as a list, dictionary, or instances of most classes.\\
+먼저, 디폴트 매개변수가 불변 객체인 경우(e.g. int) :
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def f(x, N=0):
+    N+=n
+    return N
+print(f(1))
+print(f(2))
+print(f(3))
+>>> 1
+    2
+    3
+\end{minted}
+반면 디폴트 매개변수가 가변 객체라면(e.g. list) :
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def f(x, L=[]):
+    L.append(x)
+    return L
+print(f(1))
+print(f(2))
+print(f(3))
+>>> [1]
+    [1, 2]
+    [1, 2, 3]
+\end{minted}
+가변 객체에 계속되는 호출로 전달된 인자들이 누적되었다는 것을 알 수 있음
+\newpage
+불변 객체에서처럼, 함수가 연속적으로 호출될 때에 기본값이 공유되지 않도록 하려면 :
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def f(x, M=None):
+    if M is None:
+        M = []
+    M.append(x)
+    return M
+print(f(1))
+print(f(2))
+print(f(3))
+>>> [1]
+    [2]
+    [3]
+\end{minted}
+기본값을 M=[ ] 대신 None으로 설정하면, 함수가 여러 번 호출되더라도\\ 각 호출에 대해서 M은 항상 빈 리스트가 되도록 만들어줄 수 있음
+
+
+\subsubsection{Keyword Arguments}
+
+Functions can also be called using keyword arguments of the form \uline{kwarg=value}.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def watches(action, things='zirconium pants', verdict='Consequential', state='hypnotized'):
+    print(f"-- Do you like how I {action} ?")
+    print(f"-- I've got {things}.")
+    print(f"-- {verdict} enough to make you {state}.")
+\end{minted}
+this function accepts one required argument(R) and three optional arguments\\ (unit, verdict, hint).
+\newpage
+This function can be called in any of the following ways:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+watches('dance')
+watches(action = 'talk', things='dimond rings')
+watches(things='a powerful job', state='fall into a trance', action = 'walk')
+watches('talk', 'a wonderful wife', 'Charming', 'fascinated')
+
+>>>-- Do you like how I dance ?
+    -- I've got zirconium pants.
+    -- Consequential enough to make you hypnotized.
+
+    -- Do you like how I talk ?
+    -- I've got dimond rings.
+    -- Consequential enough to make you hypnotized.
+
+    -- Do you like how I walk ?
+    -- I've got a powerful job.
+    -- Consequential enough to make you fall into a trance.
+
+    -- Do you like how I talk ?
+    -- I've got a wonderful wife.
+    -- Charming enough to make you fascinated.
+\end{minted}
+but all the following calls would be invalid:
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+watches() # required argument missing
+watches(action = 'talk', 'dimond rings') # non-keyword after a keyword arg
+watches('dance', action = 'walk') # duplicate value for the same argument
+watches(name = 'Juno', verdict = 'Charming') # unknown keyword argument name
+\end{minted}
+When parameter of the form **name is present, it receives a dictionary.\\ (*name must occur before **name.)
+%This may be combined with a formal parameter of the form *name (described in the next subsection) which receives a tuple containing the positional arguments beyond the formal parameter list.  뭐라는거
+\vspace{-0.5cm}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.22,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def cheeseshop(kind, *arguments, **keywords):
+    print("-- Do you have any", kind, "?")
+    print("-- I'm sorry, we're all out of", kind)
+    for arg in arguments:
+        print(arg)
+    print("-" * 40)
+    for kw in keywords:
+        print(kw, ":", keywords[kw])
+
+cheeseshop("Limburger",                           # kind
+           "It's very runny, sir.",               # arg1
+           "It's really very, VERY runny, sir.",  # arg2
+           shopkeeper="Michael Palin",            # kw1
+           client="John Cleese",                  # kw2
+           sketch="Cheese Shop Sketch")           # kw3
+
+>>> -- Do you have any Limburger ?
+    -- I'm sorry, we're all out of Limburger
+    It's very runny, sir.
+    It's really very, VERY runny, sir.
+    ----------------------------------------
+    shopkeeper : Michael Palin
+    client : John Cleese
+    sketch : Cheese Shop Sketch
+\end{minted}
+
+Note that \uline{the order in which the keyword arguments are printed} is guaranteed to match the order in which they were \uline{provided in the function call}.
+
+\subsection{Special parameters}
+함수 정의 단계에서 인수가 전달될 방법을 제한해두면 함수에서 어떤 인자가 전달될 때 \\
+위치로 전달되는지, 키워드로 전달되는지, 아니면 위치나 키워드로 전달되는지를 함수의 정의만 보고도 판단할 수 있어 편리하다.
+\\다음과 같이 /기호와 *기호로 인자들의 종류를 구분해줄 수 있다.\\
+def function( 위치 전용  , /,  위치-키워드  , *,  키워드 전용 )\\
+기호는 전용 변수들과 나머지 변수들을 분리하기 위해 사용된다. 따라서 / 기호가 없으면 위치 전용 인자는 없고, * 기호가 없으면 키워드 전용 인자들도 없다.
+
+\subsubsection{Function Examples}
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def standard(x):
+    print(x)
+def pos_only(x, /):
+    print(x)
+def kwd_only(*, x):
+    print(x)
+
+def combined(pos, /, standard, *, kwd):
+    print(pos, standard, kwd)
+
+standard(x=1)
+>>> 1
+standard(1)
+>>> 1
+
+pos_only(x=2)
+>>> TypeError: pos_only() got some positional-only arguments passed as keyword arguments: 'x'
+
+kwd_only(3)
+>>>TypeError: kwd_only() takes 0 positional arguments but 1 was given
+
+combined('a', standard ='b', kwd = 'c')
+>>> a b c
+\end{minted}
+실제로 인수 전달 방식을 제한해야 하는 경우들이 있다. 예를 들어, 인자 'A'와, A라는 키를 가지는 **kwds 사이에 충돌이 발생하는 상황을 살펴보자
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def func(A, B, **kwds):
+    return 'A' in kwds
+
+func(1, 'A', **{'A': 5, 'k': 6 })
+>>> TypeError: func() got multiple values for argument 'A'
+\end{minted}
+이때 기호/ 를 사용하면 A는 위치 인자로, 'A'는 **kwds(키워드 인자)의 키로 사용할 수 있으므로 True를 출력받을 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def func(A, B,/, **kwds):
+    return 'A' in kwds
+
+func(1, 'A', **{'A': 5, 'k': 6 })
+>>> True
+# func 안에 'A'가 2개 존재하지만, **kwds 밖에 있는 또다른 'A'는
+# 변수가 아닌 위치 변수 B자리에 입력된 값이기 때문에 여전히 True가 출력된다.
+\end{minted}
+\subsubsection{Recap}
+매개변수를 위치 또는 키워드 전용으로 지정하는 이유\\
+1. 위치 매개변수: 사용자가 매개변수 이름을 사용하도록 허용하고 싶지 않은 경우
+매개변수의 이름이 실제로는 의미가 없을 때, 함수 호출 시 인자의 순서를 지정해줘야 할 때, 또는 어떤 위치 매개변수와 임의의 키워드를 함께 입력받아야 할 때 사용한다.\\
+2. 키워드 전용 매개변수: 변수명에 의미가 있고 함수 정의 시에 이름을 명시하는 것이 이해를 돕는 경우, 또는 다른 사용자가 전달되는 인자의 위치에 의지하지 못하도록 할 때 사용한다.
+
+\subsection{Arbitrary Argument Lists}
+임의의 개수의 인자, 즉 가변 인자로 호출될 수 있는 함수라는 것을 표시해줄 수 있다.
+이때 가변 인자들은 튜플로 묶여있다. \\
+함수 호출 시 가변인자 묶음에 포함되지 않는 다른 인자를 입력받으려면 매개변수들을 종류에 따라 튜플 앞뒤로 배치해주면 된다. \\
+튜플 앞에 오는 것은 위치 전용 인수들이다. 함수 호출 시 전달된 값들이 위치 매개변수에 순차적으로 전달되고, 그 후 남은 인수들이 가변인자에 해당되기 때문이다. \\
+또한 *args 뒤에 오는 매개변수들은 모두 키워드 전용이어야 한다. 여러 개의 키워드 인자들은 튜플 대신 딕셔너리 형태로 전달된다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def user_profile(name, email, *args, **kwargs):
+    profile = {
+        'name': name,
+        'email': email,
+        'interests': args,
+        'additional_info': kwargs
+        }
+    print(profile)
+
+user_profile('정희원', 'jjhw4583@naver.com', '산책', '웹서핑', age=21, city='세종')
+>>> {'name': '정희원', 'email': 'jjhw4583@naver.com',
+    'interests': ('산책', '웹서핑'), 'additional_info': {'age': 21, 'city': '세종'}}
+\end{minted}
+\subsection{Unpacking Argument Lists}
+반대로 개별적인 위치 전용 인자들을 필요로 하는 함수에서는  이미 리스트나 튜플로\\ 묶여있는 인수들을 언패킹할 수도 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+def Sum(*args):
+    Sn = 0 # 수열의 합
+    seq = [] # 원소들을 넣을 빈 리스트
+    for a, r, bound in args: # 초항, 공비, 경계(시작, 끝)
+        print(f'a1 ={a}, r ={r}인 등비수열의 a{bound[0]}부터 a{bound[1]-1}까지 합')
+        for i in range(*bound):
+            a_n = a * r**i
+            Sn += a_n
+            seq.append(a_n)
+    return f"{' + '.join(map(str, seq))} = {Sn}"
+
+x = [1, 3, (5,9)]
+print(Sum(x))
+
+>>> a1 =1, r =3인 등비수열의 a5부터 a8까지 합
+    243 + 729 + 2187 + 6561 = 9720
+\end{minted}
+
+\subsection{Lambda Expressions}
+짧고 간단한 함수들은 일일이 def로 정의하고 이름을 붙여주는 대신 람다 키워드로 만들어줄 수 있다.
+단, 람다 함수는 한 번에 하나의 표현식만 가질 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# map 함수와 함께 사용하기
+# map함수: (연산, iterable)
+# 특정 연산을 iterable안의 각 요소에 적용해서 반환해줌
+S = '1,2,3,4,5,6'
+result = list(map(lambda x : int(x)*2, S.split(',')))
+result
+>>> [2, 4, 6, 8, 10, 12]
+
+# filter 함수와 함께 사용하기
+# filter함수: (조건, iterable)
+# 특정 조건을 만족하는 요소만 반환해줌
+L = [1,2,3,4,5]
+result = list(filter(lambda x : x % 2 == 0, L))
+result
+>>> [2, 4]
+
+# sorted 함수와 함께 사용하기
+# sorted함수: (iterable, 조건)
+# 기준에 맞게 정렬한 결과를 반환함.
+basket = ['apple', 'xxyyzz', 'strawberry', 'pear', 'tomato']
+result = sorted(basket, key = lambda x : len(x))
+result
+>>> ['pear', 'apple', 'xxyyzz', 'tomato', 'strawberry']
+    # xxyyzz가 tomato 앞에 옴
+    # -> 문자열 길이가 같은 요소는 알파벳순으로 다시
+    #    정렬해주지 않고 원래 리스트에서의 순서가 유지됨
+
+# 응용: 3번째 요소(pair[2])들의 순서를 기준으로 정렬
+pairs = [(1, 'one', 'D'), (2, 'two', 'C'), (3, 'three', 'B'), (4, 'four', 'A')]
+result = sorted(pairs, key=lambda pair: pair[2])
+print(result)
+\end{minted}
+\subsection{Documentation Strings}
+docstring은 객체 선언 후 바로 아래 줄에 따옴표 3개로 작성을 시작하면 된다.\\
+모듈: 모듈의 내용, 중요한 클래스나 함수 소개\\
+클래스: 동작, 중요한 attribute, 하위 클래스의 동작 등\\
+함수(or 메서드): 인자, 동작, 반환값, 발생하는 예외 등\\
+\newline
+help함수에 입력하면 docstring전체를 확인할 수 있다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+# 모듈 예시: import cmath - help(cmath)
+Help on built-in module cmath:
+NAME
+    cmath
+DESCRIPTION
+    This module provides access to mathematical functions for complex
+    numbers.
+FUNCTIONS
+    acos(z, /)
+    ...
+DATA
+    e = 2.718281828459045
+    ...
+FILE
+    (built-in)
+# 클래스 예시: help(complex)
+Help on class complex in module builtins:
+
+class complex(object)
+ |  complex(real=0, imag=0)
+ |
+ |  Create a complex number from a string or numbers.
+ |
+ |  If a string is given, parse it as a complex number.
+ |  If a single number is given, convert it to a complex number.
+ |  ...
+ |  Methods defined here:
+ |
+ |  __abs__(self, /)
+ |      abs(self)
+ |  ...
+ |  ----------------------------------------------------------
+ |  Static methods defined here:
+ |  ...
+ |  ----------------------------------------------------------
+ |  Data descriptors defined here:
+ |  ...
+
+# 함수 예시: help(print)
+print(*args, sep=' ', end='\n', file=None, flush=False)
+    Prints the values to a stream, or to sys.stdout by default.
+
+    sep
+      string inserted between values, default a space.
+    end
+      string appended after the last value, default a newline.
+    ...
+\end{minted}
+\subsection{Function Annotations}
+사용자에게 인수로 어떤 값을 넣어야하는지 타입에 대한 힌트를 주기 위한 기능이다.\\
+<함수(변수: 타입) -> 반환값의 타입 : >형태로 작성한다.
+\begin{minted}
+[
+frame=lines,
+framesep=3mm,
+baselinestretch=1.3,
+bgcolor=LightGray,
+fontsize=\normalsize,
+linenos
+]
+{python}
+''' *args는 튜플 형태로 함수에 전달되지만, 사용자가 입력하는 값은 튜플이 아님
+예를 들어, 임의 개수의 '리스트(정수로 구성된)'만 args로 입력받기로 지정했다면
+아래와 같이 어노테이션을 작성해줄 수 있음 '''
+def transpose(*args: list[int]) -> list[tuple[int,...]] :
+    return list(zip(*args))
+
+transpose([1,2,3], [4,5,6], [7,8,9])
+>>> [(1, 4, 7), (2, 5, 8), (3, 6, 9)]
+
+-----------------------------------------
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+''' -> Person의 의미: introduce 객체는 클래스 Person의 인스턴스이다'''
+def introduce(name: str, age: int) -> Person:
+\end{minted}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
