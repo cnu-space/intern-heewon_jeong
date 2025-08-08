@@ -24,5 +24,5 @@ $(DOCUMENT): $(SOURCES)
 
 clean:
 	rm -rvf $(DOCUMENT).pdf
-	rm -rvf _minted/
+	rm -rvf _minted/ _minted-main/
 	rm -rvf main.aux main.log main.bcf main.out main.toc main.run.xml missfont.log
