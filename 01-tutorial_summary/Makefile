@@ -5,6 +5,7 @@
 
 
 FILENAME=main
+LATEX:=pdflatex -shell-escape
 
 DOCUMENT:=$(FILENAME)
 SECTIONS:=chapters
@@ -17,9 +18,9 @@ all: article
 article: $(DOCUMENT)
 
 $(DOCUMENT): $(SOURCES)
-	pdflatex $(DOCUMENT) || :
-	pdflatex $(DOCUMENT) || :
-	pdflatex $(DOCUMENT) || :
+	$(LATEX) $(DOCUMENT) || :
+	$(LATEX) $(DOCUMENT) || :
+	$(LATEX) $(DOCUMENT) || :
 
 clean:
 	rm -rvf $(DOCUMENT).pdf
