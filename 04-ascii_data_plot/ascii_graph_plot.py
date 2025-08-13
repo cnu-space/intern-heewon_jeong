@@ -15,38 +15,38 @@ def ascii_graph_plot(func, xlim, canvas_size=(80, 80), symbol="x"):
 
     :param symbol:
         The symbol used to mark each data point.
-        The default symbol is ‘x’.
+        The default symbol is 'x'.
     """
 
-    import math
+    # helpers: coord transforms
+    def canvas_to_data(index, data_extent, canvas_length):
+        min, max = data_extent
+        coef = (max - min) / (canvas_length - 1)
+        value = min + coef * (index - 0)
+        return value
 
-    h, v = canvas_size  # 가로, 세로
-    L = [list(" " * h) for i in range(v)]  # h x v 크기의 공백 리스트
+    def data_to_canvas(value, data_extent, canvas_length):
+        min, max = data_extent
+        coef = (canvas_length - 1) / (max - min)
+        # index is a floating-point number
+        index = 0 + coef * (value - min)
+        return round(index)
 
-    # 정의역
-    x_index = [x for x in range(h)]
-    x_val = [xlim[0] + ((xlim[1] - xlim[0]) / (h - 1)) * x for x in x_index]
+    # canvas
+    width, height = canvas_size
+    canvas = [list(" ") * width for _ in range(height)]
 
-    # 치역
-    fx = list(map(func, x_val))  # f(x_val) (i.e. 함숫값) 들의 리스트
-    ylim = [min(fx), max(fx)]  # 최대, 최소 함숫값으로 y의 범위 설정하기
+    # data & indices
+    x_index = list(range(width))
+    x_data = list(map(lambda index: canvas_to_data(index, xlim, width), x_index))
 
-    y_index = [y for y in range(v)]
-    y_val = [ylim[1] - ((ylim[1] - ylim[0]) / (v - 1)) * y for y in y_index]
+    y_data = list(map(func, x_data))
+    ylim = [min(y_data), max(y_data)]
+    y_index = list(map(lambda value: data_to_canvas(value, ylim, height), y_data))
 
-    # 그래프 그리기
-    coord_x = list(zip(x_index, x_val))
-    coord_y = list(zip(y_index, y_val))
+    # drawing (make sure that y-indices are not out of bound)
+    indices = ((x, y) for x, y in zip(x_index, y_index) if y >= 0 and y < height)
+    for x, y in indices:
+        canvas[y][x] = symbol
 
-    yscale = (ylim[1] - ylim[0]) / (v - 1)
-    res = [
-        (x_index, y_index)
-        for (y_index, y_val) in coord_y
-        for (x_index, x_val) in coord_x
-        if abs(round(func(x_val) - y_val, 1)) < yscale
-    ]
-
-    for x, y in res:  # res: 프레임 안에서 symbol들이 위치할 x, y좌표의 리스트
-        L[y][x] = symbol
-
-    return L
+    return list(reversed(canvas))
