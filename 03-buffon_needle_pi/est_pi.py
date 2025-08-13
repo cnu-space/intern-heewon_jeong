@@ -1,28 +1,24 @@
-def accuracy(trial):
+def buffon_needle_pi(trial, l=100, t=100):
 
     import math
+    import random
 
-    from buffon_needle_pi import buffon_needle_pi
+    count = 0
 
-    result = buffon_needle_pi(trial)
-    l, t, π = result
+    for n in range(trial):
+        θ = random.uniform(0, math.pi)
+        x = random.uniform(0, t / 2)
 
-    pi = f"{math.pi :.6f}"
-    my_pi = f"{π :.6f}"
-    digits = 0
+        if x <= (l / 2) * math.sin(θ):
+            count += 1
 
-    for i in range(len(my_pi)):
+    if trial != 0:
+        P = count / trial
 
-        if my_pi[i] != ".":
+    if l <= t:
+        π = (2 * l) / (P * t)
 
-            if my_pi[i] == pi[i]:
-                digits += 1
-            else:
-                break
+    else:
+        π = (2 * (-math.sqrt(l**2 - t**2) + l - t * math.asin(t / l))) / (t * (P - 1))
 
-    return float(my_pi), digits
-
-
-for n in [2**i for i in range(7, 20 + 1)]:
-    pi, digits = accuracy(n)
-    print("n = {:10d}: pi = {}, digits = {}".format(n, pi, digits))
+    return l, t, π
